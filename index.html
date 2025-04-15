@@ -64,10 +64,10 @@
         button:hover {
             background-color: #2980b9;
         }
-        button#saveButton {
+        button#saveButton, button#saveAdminButton {
             background-color: #2ecc71;
         }
-        button#saveButton:hover {
+        button#saveButton:hover, button#saveAdminButton:hover {
             background-color: #27ae60;
         }
         button#printButton, button#printAdminButton {
@@ -110,6 +110,10 @@
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         th {
             background-color: #3498db;
@@ -271,10 +275,7 @@
             body * {
                 visibility: hidden;
             }
-            #vacationsTable, #vacationsTable * {
-                visibility: visible;
-            }
-            #adminVacationsTable, #adminVacationsTable * {
+            #vacationsTable, #vacationsTable *, #adminVacationsTable, #adminVacationsTable * {
                 visibility: visible;
             }
             #vacationsTable, #adminVacationsTable {
@@ -289,16 +290,13 @@
                 border: 1px solid #000;
                 padding: 10px;
                 text-align: center;
-                font-size: 14px;
+                font-size: 1rem;
             }
-            #vacationsTable th:nth-child(6),
-            #vacationsTable td:nth-child(6) {
+            #vacationsTable th:nth-child(6), #vacationsTable td:nth-child(6) {
                 display: none;
             }
-            #adminVacationsTable th:nth-child(6),
-            #adminVacationsTable td:nth-child(6),
-            #adminVacationsTable th:nth-child(7),
-            #adminVacationsTable td:nth-child(7) {
+            #adminVacationsTable th:nth-child(6), #adminVacationsTable td:nth-child(6),
+            #adminVacationsTable th:nth-child(7), #adminVacationsTable td:nth-child(7) {
                 display: none;
             }
         }
@@ -314,21 +312,47 @@
                 display: none !important;
             }
         }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .option-card {
+                max-width: 100%;
+            }
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .loading::after {
+            content: 'جاري التحميل...';
+            color: white;
+            font-size: 24px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- مؤشر التحميل -->
+    <div class="loading" id="loadingIndicator"></div>
+
     <!-- الصفحة الرئيسية -->
     <div class="container" id="homePage">
         <h1>KG Swift Leave Management System</h1>
-        
         <div class="home-options">
             <div class="option-card employee-card" onclick="showEmployeePage()">
                 <i class="fas fa-user"></i>
                 <h2>موظف</h2>
                 <p>تقديم طلب إجازة جديد وعرض حالة الإجازات المقدمة</p>
             </div>
-            
             <div class="option-card admin-card" onclick="showAdminLogin()">
                 <i class="fas fa-user-shield"></i>
                 <h2>مسؤول النظام</h2>
@@ -336,132 +360,34 @@
             </div>
         </div>
     </div>
-    
+
     <!-- نموذج تسجيل دخول المسؤول -->
     <div class="container" id="adminLoginPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>تسجيل دخول المسؤول</h1>
-        
         <div id="adminLoginAlert" class="alert"></div>
-        
         <form id="adminLoginForm">
             <div class="form-group">
                 <label for="adminUsername">اسم المستخدم:</label>
-                <input type="text" id="adminUsername" required>
+                <input type="text" id="adminUsername" required aria-label="اسم المستخدم">
             </div>
-            
             <div class="form-group">
                 <label for="adminPassword">كلمة المرور:</label>
-                <input type="password" id="adminPassword" required>
+                <input type="password" id="adminPassword" required aria-label="كلمة المرور">
             </div>
-            
             <button type="submit">تسجيل الدخول</button>
         </form>
     </div>
-    
-    <!-- صفحة الموظف (صفحة إدخال الإجازات) -->
+
+    <!-- صفحة الموظف -->
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
-        
         <div id="employeeAlertMessage" class="alert"></div>
-        
-        <div class="form-group">
-            <label for="employeeSelect">اسم الموظف:</label>
-            <select id="employeeSelect">
-                <option value="" disabled selected>اختر اسم الموظف</option>
-                <option value="11731">محمد علي المجرفي (11731)</option>
-                <option value="1121">بدر سويدان الشرجي (1121)</option>
-                <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
-                <option value="9684">احمد تاصر الشلبي (9684)</option>
-                <option value="3432">زهران عبدالله الشقصي (3432)</option>
-                <option value="11218">جاسم يعقوب الفوري (11218)</option>
-                <option value="11220">امل سعيد الحسنية (11220)</option>
-                <option value="11551">وفاء عبدالله العريمية (11551)</option>
-                <option value="13469">يوسف سيف الريامي (13469)</option>
-                <option value="13534">خالد يعقوب الغزالي (13534)</option>
-                <option value="11499">محمد حميد الجابري (11499)</option>
-                <option value="16432">عبير عبدالله الندابية (16432)</option>
-                <option value="19133">معتصم سالم الجابري (19133)</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="startDate">تاريخ بداية الإجازة:</label>
-            <input type="date" id="startDate">
-        </div>
-        
-        <div class="form-group">
-            <label for="endDate">تاريخ نهاية الإجازة:</label>
-            <input type="date" id="endDate">
-        </div>
-        
-        <div class="buttons">
-            <button id="addButton">إضافة الإجازة</button>
-            <button id="saveButton">حفظ البيانات</button>
-            <button id="printButton">طباعة الجدول</button>
-        </div>
-        
-        <table id="vacationsTable">
-            <thead>
-                <tr>
-                    <th>اسم الموظف</th>
-                    <th>الرقم الوظيفي</th>
-                    <th>تاريخ البداية</th>
-                    <th>تاريخ النهاية</th>
-                    <th>عدد الأيام</th>
-                    <th class="no-print">الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- البيانات ستضاف هنا عبر JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    
-    <!-- صفحة المسؤول -->
-    <div class="container" id="adminPage" style="display: none;">
-        <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
-        <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
-        
-        <div id="adminAlertMessage" class="alert"></div>
-        
-        <div class="buttons">
-            <button id="printAdminButton">طباعة الجدول</button>
-            <button id="saveAdminButton">حفظ البيانات</button>
-            <button id="importJsonButton">استيراد ملف JSON</button>
-            <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
-        </div>
-        
-        <table id="adminVacationsTable">
-            <thead>
-                <tr>
-                    <th>اسم الموظف</th>
-                    <th>الرقم الوظيفي</th>
-                    <th>تاريخ البداية</th>
-                    <th>تاريخ النهاية</th>
-                    <th>عدد الأيام</th>
-                    <th>حالة الطلب</th>
-                    <th>الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- البيانات ستضاف هنا عبر JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    
-    <!-- مودال تعديل الإجازة -->
-    <div id="editVacationModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEditModal()">×</span>
-            <h2>تعديل الإجازة</h2>
-            
-            <input type="hidden" id="editVacationId">
-            
+        <form id="vacationForm">
             <div class="form-group">
-                <label for="editEmployeeSelect">اسم الموظف:</label>
-                <select id="editEmployeeSelect">
+                <label for="employeeSelect">اسم الموظف:</label>
+                <select id="employeeSelect" required aria-label="اختر اسم الموظف">
                     <option value="" disabled selected>اختر اسم الموظف</option>
                     <option value="11731">محمد علي المجرفي (11731)</option>
                     <option value="1121">بدر سويدان الشرجي (1121)</option>
@@ -478,30 +404,108 @@
                     <option value="19133">معتصم سالم الجابري (19133)</option>
                 </select>
             </div>
-            
+            <div class="form-group">
+                <label for="startDate">تاريخ بداية الإجازة:</label>
+                <input type="date" id="startDate" required aria-label="تاريخ بداية الإجازة">
+            </div>
+            <div class="form-group">
+                <label for="endDate">تاريخ نهاية الإجازة:</label>
+                <input type="date" id="endDate" required aria-label="تاريخ نهاية الإجازة">
+            </div>
+            <div class="buttons">
+                <button type="button" id="addButton">إضافة الإجازة</button>
+                <button type="button" id="resetButton" onclick="resetForm()">إعادة تعيين</button>
+                <button type="button" id="saveButton">حفظ البيانات</button>
+                <button type="button" id="printButton">طباعة الجدول</button>
+            </div>
+        </form>
+        <table id="vacationsTable">
+            <thead>
+                <tr>
+                    <th>اسم الموظف</th>
+                    <th>الرقم الوظيفي</th>
+                    <th>تاريخ البداية</th>
+                    <th>تاريخ النهاية</th>
+                    <th>عدد الأيام</th>
+                    <th class="no-print">الحالة</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- صفحة المسؤول -->
+    <div class="container" id="adminPage" style="display: none;">
+        <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
+        <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
+        <div id="adminAlertMessage" class="alert"></div>
+        <div class="buttons">
+            <button id="printAdminButton">طباعة الجدول</button>
+            <button id="saveAdminButton">حفظ البيانات</button>
+            <button id="importJsonButton">استيراد ملف JSON</button>
+            <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+        </div>
+        <table id="adminVacationsTable">
+            <thead>
+                <tr>
+                    <th>اسم الموظف</th>
+                    <th>الرقم الوظيفي</th>
+                    <th>تاريخ البداية</th>
+                    <th>تاريخ النهاية</th>
+                    <th>عدد الأيام</th>
+                    <th>حالة الطلب</th>
+                    <th class="no-print">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- مودال تعديل الإجازة -->
+    <div id="editVacationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">×</span>
+            <h2>تعديل الإجازة</h2>
+            <input type="hidden" id="editVacationId">
+            <div class="form-group">
+                <label for="editEmployeeSelect">اسم الموظف:</label>
+                <select id="editEmployeeSelect" required aria-label="اختر اسم الموظف">
+                    <option value="" disabled selected>اختر اسم الموظف</option>
+                    <option value="11731">محمد علي المجرفي (11731)</option>
+                    <option value="1121">بدر سويدان الشرجي (1121)</option>
+                    <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
+                    <option value="9684">احمد تاصر الشلبي (9684)</option>
+                    <option value="3432">زهران عبدالله الشقصي (3432)</option>
+                    <option value="11218">جاسم يعقوب الفوري (11218)</option>
+                    <option value="11220">امل سعيد الحسنية (11220)</option>
+                    <option value="11551">وفاء عبدالله العريمية (11551)</option>
+                    <option value="13469">يوسف سيف الريامي (13469)</option>
+                    <option value="13534">خالد يعقوب الغزالي (13534)</option>
+                    <option value="11499">محمد حميد الجابري (11499)</option>
+                    <option value="16432">عبير عبدالله الندابية (16432)</option>
+                    <option value="19133">معتصم سالم الجابري (19133)</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="editStartDate">تاريخ بداية الإجازة:</label>
-                <input type="date" id="editStartDate">
+                <input type="date" id="editStartDate" required aria-label="تاريخ بداية الإجازة">
             </div>
-            
             <div class="form-group">
                 <label for="editEndDate">تاريخ نهاية الإجازة:</label>
-                <input type="date" id="editEndDate">
+                <input type="date" id="editEndDate" required aria-label="تاريخ نهاية الإجازة">
             </div>
-            
             <div class="form-group">
                 <label for="editStatus">حالة الطلب:</label>
-                <select id="editStatus">
+                <select id="editStatus" required aria-label="حالة الطلب">
                     <option value="pending">قيد الانتظار</option>
                     <option value="approved">موافق</option>
                     <option value="rejected">مرفوض</option>
                 </select>
             </div>
-            
             <button id="updateVacationButton">حفظ التغييرات</button>
         </div>
     </div>
-    
+
     <!-- مودال تأكيد الإجازة -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
@@ -516,6 +520,9 @@
     </div>
 
     <script>
+        // استبدل هذا بالرابط الفعلي لـ Google Apps Script Web App
+        const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
+
         // بيانات الموظفين
         const employees = {
             "11731": "محمد علي المجرفي",
@@ -536,44 +543,78 @@
         // مصفوفة لتخزين الإجازات
         let vacations = [];
 
-        // بيانات المسؤول
-        const adminCredentials = {
-            username: "admin",
-            password: "admin123"
-        };
+        // وظائف مساعدة
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'flex';
+        }
 
-        // تحميل البيانات من vacations_data.json تلقائيًا
+        function hideLoading() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
+
+        function showAlert(elementId, message, type) {
+            const alertElement = document.getElementById(elementId);
+            alertElement.textContent = message;
+            alertElement.className = 'alert';
+            alertElement.classList.add(`alert-${type}`);
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 3000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'تاريخ غير صالح';
+            }
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('vacations', JSON.stringify(vacations));
+        }
+
+        function loadFromLocalStorage() {
+            const stored = localStorage.getItem('vacations');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // تحميل البيانات من Google Sheets
         async function loadVacationsData(isAdmin = false) {
+            showLoading();
             try {
-                const response = await fetch('vacations_data.json');
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 if (!response.ok) {
-                    throw new Error('فشل تحميل الملف');
+                    throw new Error('فشل تحميل البيانات');
                 }
                 const data = await response.json();
-                if (Array.isArray(data)) {
-                    vacations = data;
-                    if (isAdmin) {
-                        renderAdminVacationsTable();
-                    } else {
-                        renderVacationsTable();
-                    }
-                } else {
-                    console.error('تنسيق الملف غير صالح');
-                    vacations = [];
-                    if (isAdmin) {
-                        renderAdminVacationsTable();
-                    } else {
-                        renderVacationsTable();
-                    }
-                }
-            } catch (error) {
-                console.error('خطأ أثناء تحميل vacations_data.json:', error);
-                vacations = [];
+                vacations = data;
+                saveToLocalStorage();
                 if (isAdmin) {
                     renderAdminVacationsTable();
                 } else {
                     renderVacationsTable();
                 }
+            } catch (error) {
+                console.error('خطأ أثناء تحميل البيانات:', error);
+                vacations = loadFromLocalStorage();
+                showAlert(isAdmin ? 'adminAlertMessage' : 'employeeAlertMessage', 'فشل تحميل البيانات.', 'danger');
+                if (isAdmin) {
+                    renderAdminVacationsTable();
+                } else {
+                    renderVacationsTable();
+                }
+            } finally {
+                hideLoading();
             }
         }
 
@@ -591,429 +632,5 @@
             document.getElementById('employeePage').style.display = 'block';
             document.getElementById('adminPage').style.display = 'none';
             document.getElementById('adminLoginPage').style.display = 'none';
-            loadVacationsData(); // تحميل البيانات تلقائيًا لصفحة الموظف
-            closeConfirmationModal();
-        }
-
-        function showAdminLogin() {
-            document.getElementById('homePage').style.display = 'none';
-            document.getElementById('employeePage').style.display = 'none';
-            document.getElementById('adminPage').style.display = 'none';
-            document.getElementById('adminLoginPage').style.display = 'block';
-            closeConfirmationModal();
-        }
-
-        function showAdminPage() {
-            document.getElementById('homePage').style.display = 'none';
-            document.getElementById('employeePage').style.display = 'none';
-            document.getElementById('adminLoginPage').style.display = 'none';
-            document.getElementById('adminPage').style.display = 'block';
-            loadVacationsData(true); // تحميل البيانات تلقائيًا لصفحة المسؤول
-            closeConfirmationModal();
-        }
-
-        // تحميل الإجازات عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            showHomePage();
-            
-            // معالجة نموذج تسجيل دخول المسؤول
-            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('adminUsername').value;
-                const password = document.getElementById('adminPassword').value;
-                
-                if (username === adminCredentials.username && password === adminCredentials.password) {
-                    showAdminPage();
-                } else {
-                    showAlert('adminLoginAlert', 'اسم المستخدم أو كلمة المرور غير صحيحة.', 'danger');
-                }
-            });
-            
-            // إضافة إجازة جديدة (مع نافذة تأكيد)
-            document.getElementById('addButton').addEventListener('click', showConfirmationModal);
-            
-            // حفظ البيانات وتحميل الملف JSON (صفحة الموظف)
-            document.getElementById('saveButton').addEventListener('click', function() {
-                saveVacationsToFile();
-                showAlert('employeeAlertMessage', 'تم حفظ البيانات وحمّل الملف بنجاح!', 'success');
-            });
-
-            // حفظ البيانات وتحميل الملف JSON (صفحة المسؤول)
-            document.getElementById('saveAdminButton').addEventListener('click', function() {
-                saveVacationsToFile();
-                showAlert('adminAlertMessage', 'تم حفظ البيانات وحمّل الملف بنجاح!', 'success');
-            });
-            
-            // طباعة جدول الموظف
-            document.getElementById('printButton').addEventListener('click', function() {
-                window.print();
-            });
-            
-            // طباعة جدول المسؤول
-            document.getElementById('printAdminButton').addEventListener('click', function() {
-                window.print();
-            });
-            
-            // تحديث الإجازة
-            document.getElementById('updateVacationButton').addEventListener('click', updateVacation);
-            
-            // معالجة استيراد ملف JSON في صفحة المسؤول
-            document.getElementById('importJsonButton').addEventListener('click', function() {
-                document.getElementById('jsonFileInput').click();
-            });
-            
-            document.getElementById('jsonFileInput').addEventListener('change', handleFileImport);
-        });
-
-        // إضافة إجازة جديدة (مع نافذة تأكيد)
-        function showConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'block';
-        }
-
-        function confirmAddVacation(confirm) {
-            if (confirm) {
-                addVacation();
-            }
-            closeConfirmationModal();
-        }
-
-        // إضافة إجازة جديدة مع فحص التداخل
-        function addVacation() {
-            const employeeId = document.getElementById('employeeSelect').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-
-            // التحقق من صحة المدخلات
-            if (!employeeId || !startDate || !endDate) {
-                showAlert('employeeAlertMessage', 'الرجاء إدخال جميع البيانات المطلوبة.', 'danger');
-                return;
-            }
-
-            if (new Date(endDate) < new Date(startDate)) {
-                showAlert('employeeAlertMessage', 'تاريخ نهاية الإجازة يجب أن يكون بعد تاريخ البداية.', 'danger');
-                return;
-            }
-
-            // فحص التداخل مع إجازات الموظفين الآخرين
-            const newStart = new Date(startDate);
-            const newEnd = new Date(endDate);
-
-            const overlap = vacations.some(vacation => {
-                if (vacation.employeeId === employeeId) return false; // تجاهل إجازات الموظف نفسه
-                const existingStart = new Date(vacation.startDate);
-                const existingEnd = new Date(vacation.endDate);
-
-                return (newStart <= existingEnd && newEnd >= existingStart);
-            });
-
-            if (overlap) {
-                showAlert('employeeAlertMessage', 'لا يمكن تقديم الإجازة، يرجى الاتصال بالمسؤول.', ' Cache-Control: no-cachedanger');
-                return;
-            }
-
-            // حساب عدد أيام الإجازة
-            const diffTime = Math.abs(newEnd - newStart);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-            // إضافة الإجازة إلى المصفوفة
-            const vacation = {
-                id: Date.now().toString(),
-                employeeId: employeeId,
-                employeeName: employees[employeeId],
-                startDate: startDate,
-                endDate: endDate,
-                days: diffDays,
-                status: "pending"
-            };
-
-            vacations.push(vacation);
-            renderVacationsTable();
-            resetForm();
-            showAlert('employeeAlertMessage', 'تمت إضافة الإجازة بنجاح!', 'success');
-
-// إرسال البيانات إلى Google Sheets API
-fetch("https://script.google.com/macros/s/AKfycbx1vgXby05VPWL5iDRouSLMftFVPCy086oo1v7DglJjfwd5VjCv_Pf4c1gguhzpg7F7/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(vacation)
-})
-.then(response => response.text())
-.then(result => console.log("تم الإرسال إلى Google Sheets:", result))
-.catch(error => console.error("فشل الإرسال إلى Google Sheets:", error));
-
-        }
-
-        // عرض الإجازات في جدول الموظف
-        function renderVacationsTable() {
-            const tableBody = document.querySelector('#vacationsTable tbody');
-            tableBody.innerHTML = '';
-
-            if (vacations.length === 0) {
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="6" style="text-align: center;">لا توجد إجازات مسجلة</td>';
-                tableBody.appendChild(emptyRow);
-                return;
-            }
-
-            vacations.forEach(vacation => {
-                const row = document.createElement('tr');
-                
-                let statusText, statusClass;
-                switch(vacation.status) {
-                    case 'approved':
-                        statusText = 'تمت الموافقة';
-                        statusClass = 'status-approved';
-                        break;
-                    case 'rejected':
-                        statusText = 'مرفوض';
-                        statusClass = 'status-rejected';
-                        break;
-                    default:
-                        statusText = 'قيد الانتظار';
-                        statusClass = 'status-pending';
-                }
-                
-                row.innerHTML = `
-                    <td>${vacation.employeeName}</td>
-                    <td>${vacation.employeeId}</td>
-                    <td>${formatDate(vacation.startDate)}</td>
-                    <td>${formatDate(vacation.endDate)}</td>
-                    <td>${vacation.days}</td>
-                    <td class="no-print"><span class="${statusClass}">${statusText}</span></td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // عرض الإجازات في جدول المسؤول
-        function renderAdminVacationsTable() {
-            const tableBody = document.querySelector('#adminVacationsTable tbody');
-            tableBody.innerHTML = '';
-
-            if (vacations.length === 0) {
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="7" style="text-align: center;">لا توجد إجازات مسجلة</td>';
-                tableBody.appendChild(emptyRow);
-                return;
-            }
-
-            vacations.forEach(vacation => {
-                const row = document.createElement('tr');
-                
-                let statusText, statusClass;
-                switch(vacation.status) {
-                    case 'approved':
-                        statusText = 'تمت الموافقة';
-                        statusClass = 'status-approved';
-                        break;
-                    case 'rejected':
-                        statusText = 'مرفوض';
-                        statusClass = 'status-rejected';
-                        break;
-                    default:
-                        statusText = 'قيد الانتظار';
-                        statusClass = 'status-pending';
-                }
-                
-                row.innerHTML = `
-                    <td>${vacation.employeeName}</td>
-                    <td>${vacation.employeeId}</td>
-                    <td>${formatDate(vacation.startDate)}</td>
-                    <td>${formatDate(vacation.endDate)}</td>
-                    <td>${vacation.days}</td>
-                    <td><span class="${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="edit-btn" data-id="${vacation.id}"><i class="fas fa-edit"></i> تعديل</button>
-                        <button class="delete-btn" data-id="${vacation.id}"><i class="fas fa-trash"></i> حذف</button>
-                        ${vacation.status === 'pending' ? `
-                            <button class="approve-btn" data-id="${vacation.id}" data-action="approve"><i class="fas fa-check"></i> اعتماد</button>
-                            <button class="delete-btn" data-id="${vacation.id}" data-action="reject"><i class="fas fa-times"></i> رفض</button>
-                        ` : ''}
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // إضافة مستمعي أحداث لأزرار الحذف والتعديل والاعتماد
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const action = this.getAttribute('data-action');
-                    
-                    if (action === 'reject') {
-                        rejectVacation(id);
-                    } else {
-                        deleteVacation(id);
-                    }
-                });
-            });
-            
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    openEditModal(id);
-                });
-            });
-            
-            document.querySelectorAll('.approve-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    approveVacation(id);
-                });
-            });
-        }
-
-        // حذف إجازة
-        function deleteVacation(id) {
-            vacations = vacations.filter(vacation => vacation.id !== id);
-            renderVacationsTable();
-            renderAdminVacationsTable();
-            showAlert('employeeAlertMessage', 'تم حذف الإجازة بنجاح!', 'success');
-            showAlert('adminAlertMessage', 'تم حذف الإجازة بنجاح!', 'success');
-        }
-        
-        // اعتماد إجازة
-        function approveVacation(id) {
-            const vacation = vacations.find(v => v.id === id);
-            if (vacation) {
-                vacation.status = 'approved';
-                renderAdminVacationsTable();
-                showAlert('adminAlertMessage', 'تم اعتماد الإجازة بنجاح!', 'success');
-            }
-        }
-        
-        // رفض إجازة
-        function rejectVacation(id) {
-            const vacation = vacations.find(v => v.id === id);
-            if (vacation) {
-                vacation.status = 'rejected';
-                renderAdminVacationsTable();
-                showAlert('adminAlertMessage', 'تم رفض الإجازة بنجاح!', 'success');
-            }
-        }
-
-        // فتح مودال التعديل
-        function openEditModal(id) {
-            const vacation = vacations.find(v => v.id === id);
-            if (vacation) {
-                document.getElementById('editVacationId').value = vacation.id;
-                document.getElementById('editEmployeeSelect').value = vacation.employeeId;
-                document.getElementById('editStartDate').value = vacation.startDate;
-                document.getElementById('editEndDate').value = vacation.endDate;
-                document.getElementById('editStatus').value = vacation.status;
-                document.getElementById('editVacationModal').style.display = 'block';
-            }
-        }
-
-        // إغلاق مودال التعديل
-        function closeEditModal() {
-            document.getElementById('editVacationModal').style.display = 'none';
-        }
-
-        // تحديث الإجازة
-        function updateVacation() {
-            const id = document.getElementById('editVacationId').value;
-            const employeeId = document.getElementById('editEmployeeSelect').value;
-            const startDate = document.getElementById('editStartDate').value;
-            const endDate = document.getElementById('editEndDate').value;
-            const status = document.getElementById('editStatus').value;
-
-            const vacation = vacations.find(v => v.id === id);
-            if (vacation) {
-                vacation.employeeId = employeeId;
-                vacation.employeeName = employees[employeeId];
-                vacation.startDate = startDate;
-                vacation.endDate = endDate;
-                vacation.status = status;
-                
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                const diffTime = Math.abs(end - start);
-                vacation.days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-                
-                renderVacationsTable();
-                renderAdminVacationsTable();
-                closeEditModal();
-                showAlert('adminAlertMessage', 'تم تحديث الإجازة بنجاح!', 'success');
-            }
-        }
-
-        // إغلاق مودال التأكيد
-        function closeConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
-
-        // حفظ البيانات كملف JSON وتحميله
-        function saveVacationsToFile() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations, null, 2));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "vacations_data.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        }
-
-        // معالجة استيراد ملف JSON في صفحة المسؤول
-        function handleFileImport(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        
-                        if (Array.isArray(importedData)) {
-                            const newVacations = importedData.filter(newVacation => 
-                                !vacations.some(existing => existing.id === newVacation.id)
-                            );
-                            vacations = [...vacations, ...newVacations];
-                            
-                            renderAdminVacationsTable();
-                            showAlert('adminAlertMessage', 'تم استيراد البيانات بنجاح!', 'success');
-                        } else {
-                            showAlert('adminAlertMessage', 'تنسيق الملف غير صالح.', 'danger');
-                        }
-                    } catch (error) {
-                        showAlert('adminAlertMessage', 'حدث خطأ أثناء معالجة الملف.', 'danger');
-                    }
-                };
-                reader.readAsText(file);
-            }
-            event.target.value = '';
-        }
-
-        // إعادة تعيين نموذج الإدخال
-        function resetForm() {
-            document.getElementById('employeeSelect').selectedIndex = 0;
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
-        }
-
-        // عرض رسالة تنبيه
-        function showAlert(elementId, message, type) {
-            const alertElement = document.getElementById(elementId);
-            alertElement.textContent = message;
-            alertElement.className = 'alert';
-            alertElement.classList.add(`alert-${type}`);
-            alertElement.style.display = 'block';
-
-            setTimeout(() => {
-                alertElement.style.display = 'none';
-            }, 3000);
-        }
-
-        // تنسيق التاريخ
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        }
-    </script>
-</body>
-</html>
+            loadVacationsData();
+            closeConfirmation
