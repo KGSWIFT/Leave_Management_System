@@ -268,6 +268,11 @@
         .back-btn:hover {
             background-color: #636e72;
         }
+        .logo {
+            display: block;
+            max-width: 150px; /* تصغير الشعار */
+            margin: 0 auto 20px; /* توسيط الشعار مع هامش سفلي */
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -321,16 +326,14 @@
 <body>
     <!-- الصفحة الرئيسية -->
     <div class="container" id="homePage">
-         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
+        <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System</h1>
-        
         <div class="home-options">
             <div class="option-card employee-card" onclick="showEmployeePage()">
                 <i class="fas fa-user"></i>
                 <h2>موظف</h2>
                 <p>تقديم طلب إجازة جديد وعرض حالة الإجازات المقدمة</p>
             </div>
-            
             <div class="option-card admin-card" onclick="showAdminLogin()">
                 <i class="fas fa-user-shield"></i>
                 <h2>مسؤول النظام</h2>
@@ -338,36 +341,30 @@
             </div>
         </div>
     </div>
-    
+
     <!-- نموذج تسجيل دخول المسؤول -->
     <div class="container" id="adminLoginPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>تسجيل دخول المسؤول</h1>
-        
         <div id="adminLoginAlert" class="alert"></div>
-        
         <form id="adminLoginForm">
             <div class="form-group">
                 <label for="adminUsername">اسم المستخدم:</label>
                 <input type="text" id="adminUsername" required>
             </div>
-            
             <div class="form-group">
                 <label for="adminPassword">كلمة المرور:</label>
                 <input type="password" id="adminPassword" required>
             </div>
-            
             <button type="submit">تسجيل الدخول</button>
         </form>
     </div>
-    
+
     <!-- صفحة الموظف (صفحة إدخال الإجازات) -->
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
-        
         <div id="employeeAlertMessage" class="alert"></div>
-        
         <div class="form-group">
             <label for="employeeSelect">اسم الموظف:</label>
             <select id="employeeSelect">
@@ -387,23 +384,19 @@
                 <option value="19133">معتصم سالم الجابري (19133)</option>
             </select>
         </div>
-        
         <div class="form-group">
             <label for="startDate">تاريخ بداية الإجازة:</label>
             <input type="date" id="startDate">
         </div>
-        
         <div class="form-group">
             <label for="endDate">تاريخ نهاية الإجازة:</label>
             <input type="date" id="endDate">
         </div>
-        
         <div class="buttons">
             <button id="addButton">إضافة الإجازة</button>
             <button id="saveButton">حفظ البيانات</button>
             <button id="printButton">طباعة الجدول</button>
         </div>
-        
         <table id="vacationsTable">
             <thead>
                 <tr>
@@ -420,21 +413,18 @@
             </tbody>
         </table>
     </div>
-    
+
     <!-- صفحة المسؤول -->
     <div class="container" id="adminPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
-        
         <div id="adminAlertMessage" class="alert"></div>
-        
         <div class="buttons">
             <button id="printAdminButton">طباعة الجدول</button>
             <button id="saveAdminButton">حفظ البيانات</button>
             <button id="importJsonButton">استيراد ملف JSON</button>
             <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
         </div>
-        
         <table id="adminVacationsTable">
             <thead>
                 <tr>
@@ -452,15 +442,13 @@
             </tbody>
         </table>
     </div>
-    
+
     <!-- مودال تعديل الإجازة -->
     <div id="editVacationModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">×</span>
             <h2>تعديل الإجازة</h2>
-            
             <input type="hidden" id="editVacationId">
-            
             <div class="form-group">
                 <label for="editEmployeeSelect">اسم الموظف:</label>
                 <select id="editEmployeeSelect">
@@ -480,17 +468,14 @@
                     <option value="19133">معتصم سالم الجابري (19133)</option>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label for="editStartDate">تاريخ بداية الإجازة:</label>
                 <input type="date" id="editStartDate">
             </div>
-            
             <div class="form-group">
                 <label for="editEndDate">تاريخ نهاية الإجازة:</label>
                 <input type="date" id="editEndDate">
             </div>
-            
             <div class="form-group">
                 <label for="editStatus">حالة الطلب:</label>
                 <select id="editStatus">
@@ -499,11 +484,10 @@
                     <option value="rejected">مرفوض</option>
                 </select>
             </div>
-            
             <button id="updateVacationButton">حفظ التغييرات</button>
         </div>
     </div>
-    
+
     <!-- مودال تأكيد الإجازة -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
@@ -710,7 +694,7 @@
             });
 
             if (overlap) {
-                showAlert('employeeAlertMessage', 'لا يمكن تقديم الإجازة، يرجى الاتصال بالمسؤول.', ' Cache-Control: no-cachedanger');
+                showAlert('employeeAlertMessage', 'لا يمكن تقديم الإجازة، يرجى الاتصال بالمسؤول.', 'danger');
                 return;
             }
 
