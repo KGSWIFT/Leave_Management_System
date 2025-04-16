@@ -29,6 +29,7 @@
         }
         .form-group {
             margin-bottom: 20px;
+            position: relative; /* لدعم أيقونات المدخلات */
         }
         label {
             display: block;
@@ -42,11 +43,12 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
         select:focus, input:focus {
             border-color: #3498db;
             outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
         .buttons {
             display: flex;
@@ -59,10 +61,11 @@
             cursor: pointer;
             border: none;
             font-weight: bold;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         button:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
         }
         button#saveButton, button#saveAdminButton {
             background-color: #2ecc71;
@@ -81,8 +84,10 @@
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 5px 10px;
+            padding: 4px 8px; /* تصغير الحجم */
+            font-size: 12px; /* نص أصغر */
             cursor: pointer;
+            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
             width: auto;
         }
         button.approve-btn:hover {
@@ -93,8 +98,10 @@
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 5px 10px;
+            padding: 4px 8px; /* تصغير الحجم */
+            font-size: 12px; /* نص أصغر */
             cursor: pointer;
+            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
             width: auto;
         }
         button.edit-btn:hover {
@@ -127,23 +134,33 @@
             background-color: #f1f1f1;
         }
         .delete-btn {
-            background-color: #e74c3c;
+            background-color: #e74c3cborne: none;
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 5px 10px;
+            padding: 4px 8px; /* تصغير الحجم */
+            font-size: 12px; /* نص أصغر */
             cursor: pointer;
-            transition: background-color 0.3s;
+            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
             width: auto;
         }
         .delete-btn:hover {
             background-color: #c0392b;
+        }
+        /* محاذاة أزرار الإجراءات أفقيًا */
+        td.actions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
         }
         .alert {
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 5px;
             display: none;
+            font-size: 14px;
         }
         .alert-success {
             background-color: #d4edda;
@@ -289,6 +306,72 @@
             background-color: #bdc3c7;
             cursor: not-allowed;
         }
+        /* شعار في صفحة الموظف والمسؤول */
+        .logo {
+            display: block;
+            margin: 20px auto;
+            max-width: 150px;
+            height: auto;
+        }
+        /* تحسين واجهة تسجيل الدخول */
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: linear-gradient(135deg, #ffffff, #e8f0fe);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        .login-container h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-bottom: none;
+        }
+        .login-container .form-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .login-container input {
+            padding-left: 40px; /* مساحة للأيقونة */
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+        }
+        .login-container input:focus {
+            background-color: #fff;
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+        }
+        .login-container .form-icon {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .login-container button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        .login-container .alert {
+            font-size: 13px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -313,14 +396,9 @@
             #vacationsTable th:nth-child(6), #vacationsTable td:nth-child(6) {
                 display: none;
             }
-            #adminVacationsTable th:nth-child(6), #adminVacationsTable td:nth-child(6),
             #adminVacationsTable th:nth-child(7), #adminVacationsTable td:nth-child(7) {
                 display: none;
             }
-        }
-        #adminLoginForm {
-            max-width: 400px;
-            margin: 0 auto;
         }
         .no-print {
             display: block;
@@ -331,11 +409,15 @@
             }
         }
         @media (max-width: 600px) {
-            .container {
+            .container, .login-container {
                 padding: 15px;
+                margin: 20px auto;
             }
             .option-card {
                 max-width: 100%;
+            }
+            .login-container {
+                padding: 20px;
             }
         }
         .loading {
@@ -380,17 +462,19 @@
     </div>
 
     <!-- نموذج تسجيل دخول المسؤول -->
-    <div class="container" id="adminLoginPage" style="display: none;">
+    <div class="login-container" id="adminLoginPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>تسجيل دخول المسؤول</h1>
         <div id="adminLoginAlert" class="alert"></div>
         <form id="adminLoginForm">
             <div class="form-group">
                 <label for="adminUsername">اسم المستخدم:</label>
+                <i class="fas fa-user form-icon"></i>
                 <input type="text" id="adminUsername" required aria-label="اسم المستخدم">
             </div>
             <div class="form-group">
                 <label for="adminPassword">كلمة المرور:</label>
+                <i class="fas fa-lock form-icon"></i>
                 <input type="password" id="adminPassword" required aria-label="كلمة المرور">
             </div>
             <button type="submit">تسجيل الدخول</button>
@@ -400,6 +484,7 @@
     <!-- صفحة الموظف -->
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
+        <img src="https://via.placeholder.com/150x50?text=شعار" alt="شعار الشركة" class="logo">
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
@@ -456,6 +541,7 @@
     <!-- صفحة المسؤول -->
     <div class="container" id="adminPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
+        <img src="https://via.placeholder.com/150x50?text=شعار" alt="شعار الشركة" class="logo">
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
@@ -540,14 +626,12 @@
     </div>
 
     <script>
-        // رابط Google Apps Script Web App (للتطوير)
+        // رابط Google Apps Script Web App
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpneppf2cDT-uKrUyBxhz9Ae1A4F5wWo2HGMJeWRfZf4VQoDbRuHk0ndr5q6DaKzhz/exec";
-        // للنشر النهائي، استخدم:
-        // const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKiocSJgJ360GLH1jTSlpDQcSOPSySdv87R6srt48/exec";
 
         // بيانات الموظفين
         const employees = {
-            "11731": "محمد علي المجرفي",
+            "11731": "مح <span class=\"highlight\">محمد علي المجرفي</span>",
             "1121": "بدر سويدان الشرجي",
             "9388": "قيصر عبداللطيف الزدجالي",
             "9684": "احمد تاصر الشلبي",
@@ -584,7 +668,7 @@
             alertElement.style.display = 'block';
             setTimeout(() => {
                 alertElement.style.display = 'none';
-            }, 3000);
+            }, 5000);
         }
 
         function formatDate(dateString) {
@@ -658,16 +742,23 @@
         async function loadVacationsData(isAdmin = false) {
             showLoading();
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const result = await response.json();
                 if (result.status === 'success') {
                     vacations = result.data;
                     saveToLocalStorage();
                     currentPage = 1;
                 } else {
-                    throw new Error(result.message);
+                    throw new Error(result.message || 'فشل تحميل البيانات');
                 }
             } catch (error) {
+                console.error('خطأ في تحميل البيانات:', error);
                 vacations = loadFromLocalStorage();
                 showAlert(isAdmin ? 'adminAlertMessage' : 'employeeAlertMessage', 'فشل تحميل البيانات، جارٍ استخدام البيانات المحلية.', 'warning');
             } finally {
@@ -713,21 +804,38 @@
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoading();
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+
+            console.log('محاولة تسجيل الدخول:', { username, password }); // تصحيح
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ action: 'login', username, password })
                 });
+
+                console.log('حالة الاستجابة:', response.status); // تصحيح
+
+                if (!response.ok) {
+                    throw new Error(`فشل الاتصال بالخادم: ${response.status}`);
+                }
+
                 const result = await response.json();
-                if (result.data.success) {
-                    showAdminPage();
+                console.log('استجابة الخادم:', result); // تصحيح
+
+                if (result.status === 'success' && result.data.success) {
+                    showAlert('adminLoginAlert', 'تسجيل الدخول ناجح!', 'success');
+                    setTimeout(showAdminPage, 1000); // تأخير لضمان رؤية التنبيه
                 } else {
-                    showAlert('adminLoginAlert', 'اسم المستخدم أو كلمة المرور غير صحيحة', 'danger');
+                    showAlert('adminLoginAlert', result.data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'danger');
                 }
             } catch (error) {
-                showAlert('adminLoginAlert', 'فشل تسجيل الدخول', 'danger');
+                console.error('خطأ أثناء تسجيل الدخول:', error);
+                showAlert('adminLoginAlert', `فشل تسجيل الدخول: ${error.message}`, 'danger');
             } finally {
                 hideLoading();
             }
@@ -784,6 +892,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(vacation)
                 });
                 const result = await response.json();
@@ -797,6 +906,7 @@
                     showAlert('employeeAlertMessage', result.message, 'danger');
                 }
             } catch (error) {
+                console.error('خطأ في إضافة الإجازة:', error);
                 showAlert('employeeAlertMessage', 'فشل إضافة الإجازة', 'danger');
             } finally {
                 hideLoading();
@@ -858,7 +968,7 @@
                     <td>${formatDate(vacation.endDate)}</td>
                     <td>${vacation.days}</td>
                     <td><span class="${statusClass}">${statusText}</span></td>
-                    <td class="no-print">
+                    <td class="no-print actions">
                         <button class="edit-btn" data-id="${vacation.id}">تعديل</button>
                         <button class="delete-btn" data-id="${vacation.id}">حذف</button>
                         ${vacation.status === 'pending' ? `
@@ -897,6 +1007,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'delete', id })
                 });
                 const result = await response.json();
@@ -910,6 +1021,7 @@
                     showAlert('adminAlertMessage', result.message, 'danger');
                 }
             } catch (error) {
+                console.error('خطأ في حذف الإجازة:', error);
                 showAlert('adminAlertMessage', 'فشل حذف الإجازة', 'danger');
             } finally {
                 hideLoading();
@@ -922,6 +1034,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'update', id, status: 'approved' })
                 });
                 const result = await response.json();
@@ -935,6 +1048,7 @@
                     showAlert('adminAlertMessage', result.message, 'danger');
                 }
             } catch (error) {
+                console.error('خطأ في اعتماد الإجازة:', error);
                 showAlert('adminAlertMessage', 'فشل اعتماد الإجازة', 'danger');
             } finally {
                 hideLoading();
@@ -946,6 +1060,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'update', id, status: 'rejected' })
                 });
                 const result = await response.json();
@@ -959,6 +1074,7 @@
                     showAlert('adminAlertMessage', result.message, 'danger');
                 }
             } catch (error) {
+                console.error('خطأ في رفض الإجازة:', error);
                 showAlert('adminAlertMessage', 'فشل رفض الإجازة', 'danger');
             } finally {
                 hideLoading();
@@ -1016,6 +1132,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'update', ...updatedVacation })
                 });
                 const result = await response.json();
@@ -1038,6 +1155,7 @@
                     showAlert('adminAlertMessage', result.message, 'danger');
                 }
             } catch (error) {
+                console.error('خطأ في تحديث الإجازة:', error);
                 showAlert('adminAlertMessage', 'فشل تحديث الإجازة', 'danger');
             } finally {
                 hideLoading();
