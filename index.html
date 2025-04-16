@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الإجازات</title>
+    <title>KG SWIFT لإدارة الإجازات</title>
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -29,7 +29,7 @@
         }
         .form-group {
             margin-bottom: 20px;
-            position: relative; /* لدعم أيقونات المدخلات */
+            position: relative;
         }
         label {
             display: block;
@@ -84,10 +84,10 @@
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 4px 8px; /* تصغير الحجم */
-            font-size: 12px; /* نص أصغر */
+            padding: 4px 8px;
+            font-size: 12px;
             cursor: pointer;
-            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
+            margin: 0 2px;
             width: auto;
         }
         button.approve-btn:hover {
@@ -98,10 +98,10 @@
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 4px 8px; /* تصغير الحجم */
-            font-size: 12px; /* نص أصغر */
+            padding: 4px 8px;
+            font-size: 12px;
             cursor: pointer;
-            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
+            margin: 0 2px;
             width: auto;
         }
         button.edit-btn:hover {
@@ -134,20 +134,19 @@
             background-color: #f1f1f1;
         }
         .delete-btn {
-            background-color: #e74c3cborne: none;
+            background-color: #e74c3c;
             color: white;
             border: none;
             border-radius: 3px;
-            padding: 4px 8px; /* تصغير الحجم */
-            font-size: 12px; /* نص أصغر */
+            padding: 4px 8px;
+            font-size: 12px;
             cursor: pointer;
-            margin: 0 2px; /* مسافة صغيرة بين الأزرار */
+            margin: 0 2px;
             width: auto;
         }
         .delete-btn:hover {
             background-color: #c0392b;
         }
-        /* محاذاة أزرار الإجراءات أفقيًا */
         td.actions {
             display: flex;
             flex-wrap: nowrap;
@@ -281,9 +280,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-top: 15px;
             width: auto;
-            display: inline-block;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         .back-btn:hover {
             background-color: #636e72;
@@ -306,38 +307,41 @@
             background-color: #bdc3c7;
             cursor: not-allowed;
         }
-        /* شعار في صفحة الموظف والمسؤول */
         .logo {
             display: block;
             margin: 20px auto;
-            max-width: 150px;
+            max-width: 200px;
             height: auto;
         }
-        /* تحسين واجهة تسجيل الدخول */
         .login-container {
             max-width: 400px;
             margin: 50px auto;
             background: linear-gradient(135deg, #ffffff, #e8f0fe);
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             position: relative;
         }
         .login-container h1 {
             font-size: 24px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             color: #2c3e50;
             border-bottom: none;
         }
         .login-container .form-group {
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .login-container input {
-            padding-left: 40px; /* مساحة للأيقونة */
+            width: calc(100% - 80px);
+            padding: 8px 8px 8px 35px;
             background-color: #f8f9fa;
             border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 14px;
             transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
         }
         .login-container input:focus {
             background-color: #fff;
@@ -350,16 +354,18 @@
             left: 12px;
             transform: translateY(-50%);
             color: #7f8c8d;
-            font-size: 18px;
+            font-size: 16px;
         }
         .login-container button {
-            width: 100%;
-            padding: 12px;
+            width: calc(100% - 40px);
+            padding: 10px;
             background-color: #3498db;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             transition: all 0.3s ease;
+            margin: 20px auto 0;
+            display: block;
         }
         .login-container button:hover {
             background-color: #2980b9;
@@ -369,7 +375,7 @@
         .login-container .alert {
             font-size: 13px;
             padding: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-radius: 5px;
         }
         @media print {
@@ -419,6 +425,10 @@
             .login-container {
                 padding: 20px;
             }
+            .login-container input,
+            .login-container button {
+                width: calc(100% - 30px);
+            }
         }
         .loading {
             position: fixed;
@@ -441,11 +451,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- مؤشر التحميل -->
     <div class="loading" id="loadingIndicator"></div>
 
-    <!-- الصفحة الرئيسية -->
     <div class="container" id="homePage">
+       <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System</h1>
         <div class="home-options">
             <div class="option-card employee-card">
@@ -461,9 +470,7 @@
         </div>
     </div>
 
-    <!-- نموذج تسجيل دخول المسؤول -->
     <div class="login-container" id="adminLoginPage" style="display: none;">
-        <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <h1>تسجيل دخول المسؤول</h1>
         <div id="adminLoginAlert" class="alert"></div>
         <form id="adminLoginForm">
@@ -479,12 +486,12 @@
             </div>
             <button type="submit">تسجيل الدخول</button>
         </form>
+        <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
     </div>
 
-    <!-- صفحة الموظف -->
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
-        <img src="https://via.placeholder.com/150x50?text=شعار" alt="شعار الشركة" class="logo">
+        <<img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
@@ -538,16 +545,15 @@
         <div class="pagination" id="employeePagination"></div>
     </div>
 
-    <!-- صفحة المسؤول -->
     <div class="container" id="adminPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
-        <img src="https://via.placeholder.com/150x50?text=شعار" alt="شعار الشركة" class="logo">
+        <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
             <button id="printAdminButton">طباعة الجدول</button>
             <button id="saveAdminButton">حفظ البيانات</button>
-            <button id="importJsonButton">استيراد ملف JSON</button>
+            <button id="importJsonButton">استيراد البيانات </button>
             <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
         </div>
         <table id="adminVacationsTable">
@@ -567,7 +573,6 @@
         <div class="pagination" id="adminPagination"></div>
     </div>
 
-    <!-- مودال تعديل الإجازة -->
     <div id="editVacationModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">×</span>
@@ -612,7 +617,6 @@
         </div>
     </div>
 
-    <!-- مودال تأكيد الإجازة -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeConfirmationModal()">×</span>
@@ -626,12 +630,10 @@
     </div>
 
     <script>
-        // رابط Google Apps Script Web App
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpneppf2cDT-uKrUyBxhz9Ae1A4F5wWo2HGMJeWRfZf4VQoDbRuHk0ndr5q6DaKzhz/exec";
 
-        // بيانات الموظفين
         const employees = {
-            "11731": "مح <span class=\"highlight\">محمد علي المجرفي</span>",
+            "11731": "محمد علي المجرفي",
             "1121": "بدر سويدان الشرجي",
             "9388": "قيصر عبداللطيف الزدجالي",
             "9684": "احمد تاصر الشلبي",
@@ -646,12 +648,10 @@
             "19133": "معتصم سالم الجابري"
         };
 
-        // مصفوفة لتخزين الإجازات
         let vacations = [];
         let currentPage = 1;
         const perPage = 10;
 
-        // وظائف مساعدة
         function showLoading() {
             document.getElementById('loadingIndicator').style.display = 'flex';
         }
@@ -689,7 +689,6 @@
             return stored ? JSON.parse(stored) : [];
         }
 
-        // ترقيم الصفحات
         function paginateVacations(page) {
             const start = (page - 1) * perPage;
             const end = start + perPage;
@@ -738,7 +737,6 @@
             paginationContainer.appendChild(nextButton);
         }
 
-        // تحميل البيانات
         async function loadVacationsData(isAdmin = false) {
             showLoading();
             try {
@@ -768,7 +766,6 @@
             }
         }
 
-        // وظائف التنقل
         function showHomePage() {
             document.getElementById('homePage').style.display = 'block';
             document.getElementById('employeePage').style.display = 'none';
@@ -800,14 +797,11 @@
             loadVacationsData(true);
         }
 
-        // تسجيل دخول المسؤول
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoading();
             const username = document.getElementById('adminUsername').value.trim();
             const password = document.getElementById('adminPassword').value.trim();
-
-            console.log('محاولة تسجيل الدخول:', { username, password }); // تصحيح
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -818,18 +812,15 @@
                     body: JSON.stringify({ action: 'login', username, password })
                 });
 
-                console.log('حالة الاستجابة:', response.status); // تصحيح
-
                 if (!response.ok) {
                     throw new Error(`فشل الاتصال بالخادم: ${response.status}`);
                 }
 
                 const result = await response.json();
-                console.log('استجابة الخادم:', result); // تصحيح
 
                 if (result.status === 'success' && result.data.success) {
                     showAlert('adminLoginAlert', 'تسجيل الدخول ناجح!', 'success');
-                    setTimeout(showAdminPage, 1000); // تأخير لضمان رؤية التنبيه
+                    setTimeout(showAdminPage, 1000);
                 } else {
                     showAlert('adminLoginAlert', result.data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'danger');
                 }
@@ -841,7 +832,6 @@
             }
         });
 
-        // إضافة إجازة
         function showConfirmationModal() {
             const employeeId = document.getElementById('employeeSelect').value;
             const startDate = document.getElementById('startDate').value;
@@ -913,7 +903,6 @@
             }
         }
 
-        // عرض الإجازات
         function renderVacationsTable() {
             const tableBody = document.querySelector('#vacationsTable tbody');
             tableBody.innerHTML = '';
@@ -1001,7 +990,6 @@
             renderPagination(vacations.length, true);
         }
 
-        // حذف إجازة
         async function deleteVacation(id) {
             showLoading();
             try {
@@ -1028,7 +1016,6 @@
             }
         }
 
-        // اعتماد أو رفض إجازة
         async function approveVacation(id) {
             showLoading();
             try {
@@ -1081,7 +1068,6 @@
             }
         }
 
-        // تعديل إجازة
         function openEditModal(id) {
             const vacation = vacations.find(v => v.id === id);
             if (vacation) {
@@ -1166,7 +1152,6 @@
             document.getElementById('confirmationModal').style.display = 'none';
         }
 
-        // حفظ واستيراد البيانات
         function saveVacationsToFile() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations, null, 2));
             const downloadAnchor = document.createElement('a');
@@ -1201,14 +1186,12 @@
             }
         }
 
-        // إعادة تعيين النموذج
         function resetForm() {
             document.getElementById('employeeSelect').value = '';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
         }
 
-        // تهيئة الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
             document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
