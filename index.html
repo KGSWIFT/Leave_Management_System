@@ -378,6 +378,14 @@
             margin-bottom: 15px;
             border-radius: 5px;
         }
+        .footer-text {
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -429,6 +437,9 @@
             .login-container button {
                 width: calc(100% - 30px);
             }
+            .footer-text {
+                font-size: 12px;
+            }
         }
         .loading {
             position: fixed;
@@ -454,7 +465,7 @@
     <div class="loading" id="loadingIndicator"></div>
 
     <div class="container" id="homePage">
-       <img src="KG_SWIFT.png" alt="الشعار" class="logo">
+        <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System</h1>
         <div class="home-options">
             <div class="option-card employee-card">
@@ -468,6 +479,10 @@
                 <p>إدارة طلبات الإجازات واعتمادها</p>
             </div>
         </div>
+        <footer class="no-print">
+            <p class="footer-text">جــــميـع الــــحقــــوق مـــــــحفوظـــــة 2025 KG™</p>
+            <p class="footer-text">Created by KG</p>
+        </footer>
     </div>
 
     <div class="login-container" id="adminLoginPage" style="display: none;">
@@ -630,7 +645,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuWJIHlqEi_6MXXIluA8a0WBnszTXHbtgK2hzYZDfG0wfF7pIqg2kZHiKIr70BvCvP/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpneppf2cDT-uKrUyBxhz9Ae1A4F5wWo2HGMJeWRfZf4VQoDbRuHk0ndr5q6DaKzhz/exec";
 
         const employees = {
             "11731": "محمد علي المجرفي",
@@ -1207,5 +1222,6 @@
             document.getElementById('jsonFileInput').addEventListener('change', handleFileImport);
         });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9319acb08cbc7bb4',t:'MTc0NDg2OTMzNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
