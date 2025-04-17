@@ -348,12 +348,12 @@
     <div class="container" id="homePage">
         <h1>KG Swift Leave Management System</h1>
         <div class="home-options">
-            <div class="option-card employee-card">
+            <div class="option-card employee-card" onclick="showEmployeePage()">
                 <i class="fas fa-user"></i>
                 <h2>موظف</h2>
                 <p>تقديم طلب إجازة جديد وعرض حالة الإجازات المقدمة</p>
             </div>
-            <div class="option-card admin-card">
+            <div class="option-card admin-card" onclick="showAdminLogin()">
                 <i class="fas fa-user-shield"></i>
                 <h2>مسؤول النظام</h2>
                 <p>إدارة طلبات الإجازات واعتمادها</p>
@@ -413,10 +413,10 @@
                 <input type="date" id="endDate" required aria-label="تاريخ نهاية الإجازة">
             </div>
             <div class="buttons">
-                <button type="button" id="addButton">إضافة الإجازة</button>
+                <button type="button" id="addButton" onclick="showConfirmationModal()">إضافة الإجازة</button>
                 <button type="button" id="resetButton" onclick="resetForm()">إعادة تعيين</button>
-                <button type="button" id="saveButton">حفظ البيانات</button>
-                <button type="button" id="printButton">طباعة الجدول</button>
+                <button type="button" id="saveButton" onclick="saveToLocalStorage()">حفظ البيانات</button>
+                <button type="button" id="printButton" onclick="window.print()">طباعة الجدول</button>
             </div>
         </form>
         <table id="vacationsTable">
@@ -440,10 +440,10 @@
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
-            <button id="printAdminButton">طباعة الجدول</button>
-            <button id="saveAdminButton">حفظ البيانات</button>
-            <button id="importJsonButton">استيراد ملف JSON</button>
-            <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+            <button id="printAdminButton" onclick="window.print()">طباعة الجدول</button>
+            <button id="saveAdminButton" onclick="saveToLocalStorage()">حفظ البيانات</button>
+            <button id="importJsonButton" onclick="document.getElementById('jsonFileInput').click()">استيراد ملف JSON</button>
+            <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="importJsonFile(event)">
         </div>
         <table id="adminVacationsTable">
             <thead>
@@ -502,7 +502,7 @@
                     <option value="rejected">مرفوض</option>
                 </select>
             </div>
-            <button id="updateVacationButton">حفظ التغييرات</button>
+            <button id="updateVacationButton" onclick="updateVacation()">حفظ التغييرات</button>
         </div>
     </div>
 
@@ -521,7 +521,7 @@
 
     <script>
         // رابط Google Apps Script Web App
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytezkgoIwjoa1ePuZOgRe7OfgkeFdCYjVd3aFOZbnbKmY86FlZX5x81CvNJ_4CuDqz/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLnasAlWhjHnY_lCA3DE1je-afwJubXg5O7RVZ2BrE-Ytz4CdkiAOjuXS5j4ITU6PC/exec";
 
         // بيانات الموظفين
         const employees = {
@@ -587,8 +587,12 @@
         function saveToLocalStorage() {
             try {
                 localStorage.setItem('vacations', JSON.stringify(vacations));
+                showAlert('employeeAlertMessage', 'تم حفظ البيانات محليًا بنجاح.', 'success');
+                showAlert('adminAlertMessage', 'تم حفظ البيانات محليًا بنجاح.', 'success');
             } catch (error) {
                 console.error('خطأ أثناء حفظ البيانات في localStorage:', error);
+                showAlert('employeeAlertMessage', 'فشل حفظ البيانات محليًا.', 'danger');
+                showAlert('adminAlertMessage', 'فشل حفظ البيانات محليًا.', 'danger');
             }
         }
 
@@ -599,6 +603,13 @@
             } catch (error) {
                 console.error('خطأ أثناء تحميل البيانات من localStorage:', error);
                 return [];
+            }
+        }
+
+        function resetForm() {
+            const vacationForm = document.getElementById('vacationForm');
+            if (vacationForm) {
+                vacationForm.reset();
             }
         }
 
@@ -615,16 +626,20 @@
                 if (!response.ok) {
                     throw new Error(`فشل تحميل البيانات: ${response.status} ${response.statusText}`);
                 }
-                const data = await response.json();
-                if (!Array.isArray(data)) {
-                    throw new Error('البيانات المستلمة غير صالحة: ليست مصفوفة');
+                const result = await response.json();
+                if (result.status !== 'success' || !Array.isArray(result.data)) {
+                    throw new Error('البيانات المستلمة غير صالحة: تنسيق غير متوقع');
                 }
-                vacations = data;
+                vacations = result.data;
                 saveToLocalStorage();
             } catch (error) {
                 console.error('خطأ أثناء تحميل البيانات:', error);
                 vacations = loadFromLocalStorage();
-                showAlert(isAdmin ? 'adminAlertMessage' : 'employeeAlertMessage', 'فشل تحميل البيانات. يتم استخدام البيانات المحلية.', 'warning');
+                showAlert(
+                    isAdmin ? 'adminAlertMessage' : 'employeeAlertMessage',
+                    'فشل تحميل البيانات من الخادم. يتم استخدام البيانات المحلية. حاول مرة أخرى لاحقًا.',
+                    'warning'
+                );
             } finally {
                 if (isAdmin) {
                     renderAdminVacationsTable();
@@ -648,13 +663,14 @@
                 adminPage.style.display = 'none';
                 adminLoginPage.style.display = 'none';
                 closeConfirmationModal();
+                closeEditModal();
             } else {
                 console.error('أحد العناصر غير موجود في DOM');
             }
         }
 
         function showEmployeePage() {
-            console.log('تم النقر على بطاقة الموظف'); // للتصحيح
+            console.log('تم النقر على بطاقة الموظف');
             const homePage = document.getElementById('homePage');
             const employeePage = document.getElementById('employeePage');
             const adminPage = document.getElementById('adminPage');
@@ -665,20 +681,16 @@
                 employeePage.style.display = 'block';
                 adminPage.style.display = 'none';
                 adminLoginPage.style.display = 'none';
-                try {
-                    loadVacationsData();
-                } catch (error) {
-                    console.error('خطأ أثناء تحميل البيانات:', error);
-                    showAlert('employeeAlertMessage', 'فشل تحميل البيانات.', 'danger');
-                }
+                loadVacationsData();
                 closeConfirmationModal();
+                closeEditModal();
             } else {
                 console.error('أحد العناصر غير موجود في DOM');
             }
         }
 
         function showAdminLogin() {
-            console.log('تم النقر على بطاقة المسؤول'); // للتصحيح
+            console.log('تم النقر على بطاقة المسؤول');
             const homePage = document.getElementById('homePage');
             const employeePage = document.getElementById('employeePage');
             const adminPage = document.getElementById('adminPage');
@@ -690,6 +702,7 @@
                 adminPage.style.display = 'none';
                 adminLoginPage.style.display = 'block';
                 closeConfirmationModal();
+                closeEditModal();
             } else {
                 console.error('أحد العناصر غير موجود في DOM');
             }
@@ -706,13 +719,9 @@
                 employeePage.style.display = 'none';
                 adminLoginPage.style.display = 'none';
                 adminPage.style.display = 'block';
-                try {
-                    loadVacationsData(true);
-                } catch (error) {
-                    console.error('خطأ أثناء تحميل البيانات:', error);
-                    showAlert('adminAlertMessage', 'فشل تحميل البيانات.', 'danger');
-                }
+                loadVacationsData(true);
                 closeConfirmationModal();
+                closeEditModal();
             } else {
                 console.error('أحد العناصر غير موجود في DOM');
             }
@@ -729,13 +738,18 @@
                     },
                     body: JSON.stringify({ action: "login", username, password })
                 });
-                const result = await response.json();
                 if (!response.ok) {
-                    throw new Error(`فشل تسجيل الدخول: ${response.status}`);
+                    throw new Error(`فشل تسجيل الدخول: ${response.status} ${response.statusText}`);
                 }
-                return result.success;
+                const result = await response.json();
+                if (result.status === "success" && result.data.success) {
+                    return true;
+                } else {
+                    throw new Error(result.data.message || 'فشل تسجيل الدخول');
+                }
             } catch (error) {
                 console.error('خطأ أثناء تسجيل الدخول:', error);
+                showAlert('adminLoginAlert', error.message || 'حدث خطأ أثناء تسجيل الدخول.', 'danger');
                 return false;
             } finally {
                 hideLoading();
@@ -747,6 +761,13 @@
             const modal = document.getElementById('confirmationModal');
             if (modal) {
                 modal.style.display = 'block';
+            }
+        }
+
+        function closeConfirmationModal() {
+            const modal = document.getElementById('confirmationModal');
+            if (modal) {
+                modal.style.display = 'none';
             }
         }
 
@@ -774,7 +795,6 @@
                 return;
             }
 
-            // فحص التداخل
             const selfOverlap = vacations.some(vacation => {
                 if (vacation.employeeId !== employeeId) return false;
                 const existingStart = new Date(vacation.startDate);
@@ -784,18 +804,6 @@
 
             if (selfOverlap) {
                 showAlert('employeeAlertMessage', 'لديك إجازة متداخلة في هذه الفترة.', 'danger');
-                return;
-            }
-
-            const otherOverlap = vacations.some(vacation => {
-                if (vacation.employeeId === employeeId) return false;
-                const existingStart = new Date(vacation.startDate);
-                const existingEnd = new Date(vacation.endDate);
-                return (newStart <= existingEnd && newEnd >= existingStart);
-            });
-
-            if (otherOverlap) {
-                showAlert('employeeAlertMessage', 'لا يمكن تقديم الإجازة، يرجى الاتصال بالمسؤول.', 'danger');
                 return;
             }
 
@@ -833,7 +841,7 @@
                 }
             } catch (error) {
                 console.error("فشل الإرسال إلى Google Sheets:", error);
-                showAlert('employeeAlertMessage', 'فشل إرسال البيانات إلى Google Sheets.', 'danger');
+                showAlert('employeeAlertMessage', 'فشل إرسال البيانات إلى Google Sheets. حاول مرة أخرى.', 'danger');
             } finally {
                 hideLoading();
             }
@@ -985,7 +993,7 @@
                 }
             } catch (error) {
                 console.error("فشل حذف الإجازة:", error);
-                showAlert('adminAlertMessage', 'فشل حذف الإجازة.', 'danger');
+                showAlert('adminAlertMessage', 'فشل حذف الإجازة. حاول مرة أخرى.', 'danger');
             } finally {
                 hideLoading();
             }
@@ -1009,13 +1017,14 @@
                         vacation.status = 'approved';
                         saveToLocalStorage();
                         renderAdminVacationsTable();
+                        renderVacationsTable();
                         showAlert('adminAlertMessage', result.message, 'success');
                     } else {
                         showAlert('adminAlertMessage', result.message || 'فشل اعتماد الإجازة.', 'danger');
                     }
                 } catch (error) {
                     console.error("فشل اعتماد الإجازة:", error);
-                    showAlert('adminAlertMessage', 'فشل اعتماد الإجازة.', 'danger');
+                    showAlert('adminAlertMessage', 'فشل اعتماد الإجازة. حاول مرة أخرى.', 'danger');
                 } finally {
                     hideLoading();
                 }
@@ -1040,13 +1049,14 @@
                         vacation.status = 'rejected';
                         saveToLocalStorage();
                         renderAdminVacationsTable();
+                        renderVacationsTable();
                         showAlert('adminAlertMessage', result.message, 'success');
                     } else {
                         showAlert('adminAlertMessage', result.message || 'فشل رفض الإجازة.', 'danger');
                     }
                 } catch (error) {
                     console.error("فشل رفض الإجازة:", error);
-                    showAlert('adminAlertMessage', 'فشل رفض الإجازة.', 'danger');
+                    showAlert('adminAlertMessage', 'فشل رفض الإجازة. حاول مرة أخرى.', 'danger');
                 } finally {
                     hideLoading();
                 }
@@ -1104,202 +1114,116 @@
                 return;
             }
 
-            const vacation = vacations.find(v => v.id === id);
-            if (vacation) {
-                showLoading();
-                try {
-                    const updatedVacation = {
-                        id: id,
-                        employeeId: employeeId,
-                        employeeName: employees[employeeId],
-                        startDate: startDate,
-                        endDate: endDate,
-                        days: Math.ceil(Math.abs(newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1,
-                        status: status
-                    };
+            // التحقق من التداخل مع إجازات أخرى لنفس الموظف (باستثناء الإجازة الحالية)
+            const selfOverlap = vacations.some(vacation => {
+                if (vacation.id === id || vacation.employeeId !== employeeId) return false;
+                const existingStart = new Date(vacation.startDate);
+                const existingEnd = new Date(vacation.endDate);
+                return (newStart <= existingEnd && newEnd >= existingStart);
+            });
 
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ action: "update", ...updatedVacation })
-                    });
-                    const result = await response.json();
-                    if (result.status === "success") {
-                        vacation.employeeId = employeeId;
-                        vacation.employeeName = employees[employeeId];
-                        vacation.startDate = startDate;
-                        vacation.endDate = endDate;
-                        vacation.days = updatedVacation.days;
-                        vacation.status = status;
-                        saveToLocalStorage();
-                        renderVacationsTable();
-                        renderAdminVacationsTable();
-                        closeEditModal();
-                        showAlert('adminAlertMessage', result.message, 'success');
-                    } else {
-                        showAlert('adminAlertMessage', result.message || 'فشل تحديث الإجازة.', 'danger');
-                    }
-                } catch (error) {
-                    console.error("فشل تحديث الإجازة:", error);
-                    showAlert('adminAlertMessage', 'فشل تحديث الإجازة.', 'danger');
-                } finally {
-                    hideLoading();
-                }
+            if (selfOverlap) {
+                showAlert('adminAlertMessage', 'يوجد تداخل مع إجازة أخرى لهذا الموظف.', 'danger');
+                return;
             }
-        }
 
-        function closeConfirmationModal() {
-            const modal = document.getElementById('confirmationModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
+            const diffTime = Math.abs(newEnd - newStart);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-        // حفظ البيانات كملف JSON
-        function saveVacationsToFile() {
+            const updatedVacation = {
+                id: id,
+                employeeId: employeeId,
+                employeeName: employees[employeeId],
+                startDate: startDate,
+                endDate: endDate,
+                days: diffDays,
+                status: status
+            };
+
+            showLoading();
             try {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations, null, 2));
-                const downloadAnchorNode = document.createElement('a');
-                downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", "vacations_data.json");
-                document.body.appendChild(downloadAnchorNode);
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
-                showAlert('adminAlertMessage', 'تم حفظ البيانات وحمّل الملف بنجاح!', 'success');
-                showAlert('employeeAlertMessage', 'تم حفظ البيانات وحمّل الملف بنجاح!', 'success');
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ action: "update", ...updatedVacation })
+                });
+                const result = await response.json();
+                if (result.status === "success") {
+                    const index = vacations.findIndex(v => v.id === id);
+                    if (index !== -1) {
+                        vacations[index] = updatedVacation;
+                    }
+                    saveToLocalStorage();
+                    renderAdminVacationsTable();
+                    renderVacationsTable();
+                    closeEditModal();
+                    showAlert('adminAlertMessage', result.message, 'success');
+                } else {
+                    showAlert('adminAlertMessage', result.message || 'فشل تحديث الإجازة.', 'danger');
+                }
             } catch (error) {
-                console.error('خطأ أثناء حفظ الملف:', error);
-                showAlert('adminAlertMessage', 'فشل حفظ الملف.', 'danger');
+                console.error("فشل تحديث الإجازة:", error);
+                showAlert('adminAlertMessage', 'فشل تحديث الإجازة. حاول مرة أخرى.', 'danger');
+            } finally {
+                hideLoading();
             }
         }
 
         // استيراد ملف JSON
-        function handleFileImport(event) {
+        function importJsonFile(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        if (Array.isArray(importedData)) {
-                            const newVacations = importedData.filter(newVacation => 
-                                !vacations.some(existing => existing.id === newVacation.id)
-                            );
-                            vacations = [...vacations, ...newVacations];
-                            saveToLocalStorage();
-                            renderAdminVacationsTable();
-                            showAlert('adminAlertMessage', 'تم استيراد البيانات بنجاح!', 'success');
-                        } else {
-                            showAlert('adminAlertMessage', 'تنسيق الملف غير صالح.', 'danger');
-                        }
-                    } catch (error) {
-                        console.error('خطأ أثناء معالجة الملف:', error);
-                        showAlert('adminAlertMessage', 'حدث خطأ أثناء معالجة الملف.', 'danger');
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        vacations = importedData;
+                        saveToLocalStorage();
+                        renderVacationsTable();
+                        renderAdminVacationsTable();
+                        showAlert('adminAlertMessage', 'تم استيراد البيانات بنجاح.', 'success');
+                    } else {
+                        showAlert('adminAlertMessage', 'ملف JSON غير صالح.', 'danger');
                     }
-                };
-                reader.readAsText(file);
-            }
-            event.target.value = '';
+                } catch (error) {
+                    console.error('خطأ أثناء استيراد ملف JSON:', error);
+                    showAlert('adminAlertMessage', 'فشل استيراد ملف JSON.', 'danger');
+                }
+            };
+            reader.readAsText(file);
         }
 
-        // إعادة تعيين النموذج
-        function resetForm() {
-            const employeeSelect = document.getElementById('employeeSelect');
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            if (employeeSelect && startDate && endDate) {
-                employeeSelect.selectedIndex = 0;
-                startDate.value = '';
-                endDate.value = '';
-            }
-        }
-
-        // تهيئة الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('تم تحميل DOM'); // للتصحيح
-            showHomePage();
-
-            const employeeCard = document.querySelector('.employee-card');
-            const adminCard = document.querySelector('.admin-card');
-
-            if (employeeCard) {
-                employeeCard.addEventListener('click', function() {
-                    console.log('النقر على بطاقة الموظف'); // للتصحيح
-                    showEmployeePage();
-                });
-            } else {
-                console.error('بطاقة الموظف غير موجودة');
-            }
-
-            if (adminCard) {
-                adminCard.addEventListener('click', function() {
-                    console.log('النقر على بطاقة المسؤول'); // للتصحيح
-                    showAdminLogin();
-                });
-            } else {
-                console.error('بطاقة المسؤول غير موجودة');
-            }
-
+        // إعداد الأحداث
+        document.addEventListener('DOMContentLoaded', () => {
+            // إعداد نموذج تسجيل دخول المسؤول
             const adminLoginForm = document.getElementById('adminLoginForm');
             if (adminLoginForm) {
-                adminLoginForm.addEventListener('submit', async function(e) {
+                adminLoginForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const username = document.getElementById('adminUsername').value;
                     const password = document.getElementById('adminPassword').value;
                     const success = await loginAdmin(username, password);
                     if (success) {
                         showAdminPage();
-                    } else {
-                        showAlert('adminLoginAlert', 'اسم المستخدم أو كلمة المرور غير صحيحة.', 'danger');
+                        adminLoginForm.reset();
                     }
                 });
             }
 
+            // إعداد أزرار إضافة الإجازة
             const addButton = document.getElementById('addButton');
             if (addButton) {
                 addButton.addEventListener('click', showConfirmationModal);
             }
 
-            const saveButton = document.getElementById('saveButton');
-            if (saveButton) {
-                saveButton.addEventListener('click', saveVacationsToFile);
-            }
-
-            const saveAdminButton = document.getElementById('saveAdminButton');
-            if (saveAdminButton) {
-                saveAdminButton.addEventListener('click', saveVacationsToFile);
-            }
-
-            const printButton = document.getElementById('printButton');
-            if (printButton) {
-                printButton.addEventListener('click', () => window.print());
-            }
-
-            const printAdminButton = document.getElementById('printAdminButton');
-            if (printAdminButton) {
-                printAdminButton.addEventListener('click', () => window.print());
-            }
-
+            // إعداد أزرار تعديل الإجازة
             const updateVacationButton = document.getElementById('updateVacationButton');
             if (updateVacationButton) {
                 updateVacationButton.addEventListener('click', updateVacation);
-            }
-
-            const importJsonButton = document.getElementById('importJsonButton');
-            if (importJsonButton) {
-                importJsonButton.addEventListener('click', () => {
-                    const jsonFileInput = document.getElementById('jsonFileInput');
-                    if (jsonFileInput) {
-                        jsonFileInput.click();
-                    }
-                });
-            }
-
-            const jsonFileInput = document.getElementById('jsonFileInput');
-            if (jsonFileInput) {
-                jsonFileInput.addEventListener('change', handleFileImport);
             }
         });
     </script>
