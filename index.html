@@ -282,9 +282,9 @@
             font-weight: bold;
             margin-top: 15px;
             width: auto;
-            display: block;
+            margin-right: 0;
             margin-left: auto;
-            margin-right: auto;
+            display: block;
         }
         .back-btn:hover {
             background-color: #636e72;
@@ -306,12 +306,6 @@
         .pagination button:disabled {
             background-color: #bdc3c7;
             cursor: not-allowed;
-        }
-        .logo {
-            display: block;
-            margin: 20px auto;
-            max-width: 200px;
-            height: auto;
         }
         .login-container {
             max-width: 400px;
@@ -377,6 +371,12 @@
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            margin-top: 40px;
         }
         @media print {
             body * {
@@ -454,7 +454,6 @@
     <div class="loading" id="loadingIndicator"></div>
 
     <div class="container" id="homePage">
-       <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System</h1>
         <div class="home-options">
             <div class="option-card employee-card">
@@ -467,6 +466,10 @@
                 <h2>مسؤول النظام</h2>
                 <p>إدارة طلبات الإجازات واعتمادها</p>
             </div>
+        </div>
+        <div class="footer">
+            جميع الحقوق محفوظة 2025 KG™<br>
+            Created by KG
         </div>
     </div>
 
@@ -491,7 +494,6 @@
 
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
-        <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
@@ -547,7 +549,6 @@
 
     <div class="container" id="adminPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
-        <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
@@ -630,7 +631,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyimw_fwdkiTWcD8DGR6tg1Gcj8hYIYkfnd8EQo1e9iqthWsNbVEkX7j62qU3NEj19s/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzB7AhWY0Q3zuNDWz6dt1RA3nejKM0wtjjcx9pZhkbzQk0KE_ViLsBI4-qPI0q-VYL9/exec";
 
         const employees = {
             "11731": "محمد علي المجرفي",
@@ -877,8 +878,6 @@
                 days: diffDays,
                 status: "pending"
             };
-
-            console.log("🚀 إرسال الإجازة إلى الخادم:", vacation);
 
             showLoading();
             try {
@@ -1209,5 +1208,6 @@
             document.getElementById('jsonFileInput').addEventListener('change', handleFileImport);
         });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'932a2ed46d20adcb',t:'MTc0NTA0MjQ0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
