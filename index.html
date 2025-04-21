@@ -645,7 +645,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwo53AU7fU4XgvMVpjpDDqLCFhx_u59QjLw-wbD0s8_qz9JOgMcNENOze7UiY3QHiNb/exec"; // Replace with actual Google Apps Script Web App URL
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9TBGvy4aMtuzgGUwKB03M1An0uPwpRpMEBvl-cgbgwzmQ0t7_4kLOIAq3o8m5R6eI/exec";
 
         const employees = {
             "11731": "محمد علي المجرفي",
@@ -755,14 +755,20 @@
         async function loadVacationsData(isAdmin = false) {
             showLoading();
             try {
+                console.log('جاري جلب البيانات من:', GOOGLE_SCRIPT_URL);
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
+                    redirect: 'follow',
+                    mode: 'cors'
                 });
+                console.log('حالة الاستجابة:', response.status, response.statusText);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+                    const errorText = await response.text();
+                    throw new Error(`خطأ HTTP! الحالة: ${response.status} ${response.statusText} - ${errorText}`);
                 }
                 const result = await response.json();
+                console.log('البيانات المستلمة:', result);
                 if (result.status === 'success') {
                     vacations = result.data;
                     saveToLocalStorage();
@@ -818,15 +824,19 @@
             const username = document.getElementById('adminUsername').value.trim();
             const password = document.getElementById('adminPassword').value.trim();
 
+            const formData = new FormData();
+            formData.append('action', 'login');
+            formData.append('username', username);
+            formData.append('password', password);
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'login', username, password })
+                    body: formData
                 });
 
                 if (!response.ok) {
-                    throw new Error(`فشل الاتصال بالخادم: ${response.status} ${response.statusText}`);
+                    throw new Error(`فشل الاتصال بالخادم: ${response.status}`);
                 }
 
                 const result = await response.json();
@@ -891,12 +901,16 @@
                 status: "pending"
             };
 
+            const formData = new FormData();
+            for (const key in vacation) {
+                formData.append(key, vacation[key]);
+            }
+
             showLoading();
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(vacation)
+                    body: formData
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
@@ -1005,11 +1019,14 @@
 
         async function deleteVacation(id) {
             showLoading();
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('id', id);
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'delete', id })
+                    body: formData
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
@@ -1031,11 +1048,15 @@
 
         async function approveVacation(id) {
             showLoading();
+            const formData = new FormData();
+            formData.append('action', 'update');
+            formData.append('id', id);
+            formData.append('status', 'approved');
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'update', id, status: 'approved' })
+                    body: formData
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
@@ -1057,11 +1078,15 @@
 
         async function rejectVacation(id) {
             showLoading();
+            const formData = new FormData();
+            formData.append('action', 'update');
+            formData.append('id', id);
+            formData.append('status', 'rejected');
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'update', id, status: 'rejected' })
+                    body: formData
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
@@ -1127,12 +1152,17 @@
                 status
             };
 
+            const formData = new FormData();
+            formData.append('action', 'update');
+            for (const key in updatedVacation) {
+                formData.append(key, updatedVacation[key]);
+            }
+
             showLoading();
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'update', ...updatedVacation })
+                    body: formData
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
