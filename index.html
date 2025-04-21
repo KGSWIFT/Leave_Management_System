@@ -488,7 +488,7 @@
     <div class="login-container" id="adminLoginPage" style="display: none;">
         <h1>تسجيل دخول المسؤول</h1>
         <div id="adminLoginAlert" class="alert"></div>
-        <form id="adminLoginForm" action="https://script.google.com/macros/s/AKfycbyaogWPIKNGbVmoSm8_mVx44_dTrH5NR96cge9EYbiEj13KEQT-lgy0QWGYEQDVi-h5/exec" method="POST" target="hiddenFrame">
+        <form id="adminLoginForm" action="https://script.google.com/macros/s/AKfycbwPPtIQy1A9OLAUDpN9nuF3_4J35x-EwxXxFmfp8D01GWzCf2f9fV1dsrcmVZV9w_cl/exec" method="POST" target="hiddenFrame">
             <input type="hidden" name="action" value="login">
             <div class="form-group">
                 <label for="adminUsername">اسم المستخدم:</label>
@@ -498,7 +498,7 @@
             <div class="form-group">
                 <label for="adminPassword">كلمة المرور:</label>
                 <i class="fas fa-lock form-icon"></i>
-                <input type="password" id="adminPassword" name="password" required aria-label="كلمة المرور">
+                <input_COUNTER = 0 type="password" id="adminPassword" name="password" required aria-label="كلمة المرور">
             </div>
             <button type="submit">تسجيل الدخول</button>
         </form>
@@ -510,7 +510,7 @@
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
         <div id="employeeAlertMessage" class="alert"></div>
-        <form id="vacationForm" action="https://script.google.com/macros/s/AKfycbyaogWPIKNGbVmoSm8_mVx44_dTrH5NR96cge9EYbiEj13KEQT-lgy0QWGYEQDVi-h5/exec" method="POST" target="hiddenFrame">
+        <form id="vacationForm" action="https://script.google.com/macros/s/AKfycbwPPtIQy1A9OLAUDpN9nuF3_4J35x-EwxXxFmfp8D01GWzCf2f9fV1dsrcmVZV9w_cl/exec" method="POST" target="hiddenFrame">
             <div class="form-group">
                 <label for="employeeSelect">اسم الموظف:</label>
                 <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
@@ -597,7 +597,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeEditModal()">×</span>
             <h2>تعديل الإجازة</h2>
-            <form id="editVacationForm" action="https://script.google.com/macros/s/AKfycbyaogWPIKNGbVmoSm8_mVx44_dTrH5NR96cge9EYbiEj13KEQT-lgy0QWGYEQDVi-h5/exec" method="POST" target="hiddenFrame">
+            <form id="editVacationForm" action="https://script.google.com/macros/s/AKfycbwPPtIQy1A9OLAUDpN9nuF3_4J35x-EwxXxFmfp8D01GWzCf2f9fV1dsrcmVZV9w_cl/exec" method="POST" target="hiddenFrame">
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" id="editVacationId">
                 <div class="form-group">
@@ -655,14 +655,14 @@
     </div>
 
     <iframe name="hiddenFrame" style="display: none;"></iframe>
-    <form id="actionForm" action="https://script.google.com/macros/s/AKfycbyaogWPIKNGbVmoSm8_mVx44_dTrH5NR96cge9EYbiEj13KEQT-lgy0QWGYEQDVi-h5/exec" method="POST" target="hiddenFrame" style="display: none;">
+    <form id="actionForm" action="https://script.google.com/macros/s/AKfycbwPPtIQy1A9OLAUDpN9nuF3_4J35x-EwxXxFmfp8D01GWzCf2f9fV1dsrcmVZV9w_cl/exec" method="POST" target="hiddenFrame" style="display: none;">
         <input type="hidden" name="action" id="actionType">
         <input type="hidden" name="id" id="actionId">
         <input type="hidden" name="status" id="actionStatus">
     </form>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyaogWPIKNGbVmoSm8_mVx44_dTrH5NR96cge9EYbiEj13KEQT-lgy0QWGYEQDVi-h5/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPPtIQy1A9OLAUDpN9nuF3_4J35x-EwxXxFmfp8D01GWzCf2f9fV1dsrcmVZV9w_cl/exec";
         const employees = {
             "11731": "محمد علي المجرفي",
             "1121": "بدر سويدان الشرجي",
