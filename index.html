@@ -6,7 +6,7 @@
     <title>KG SWIFT لإدارة الإجازات</title>
     <link rel="icon" type="image/png" href="KG_SWIFT2.ico">
     <style>
-        /* النمط الأصلي محافظ عليه بالكامل */
+        /* النمط الأصلي محافظ عليه مع التعديلات */
         body {
             font-family: 'Times New Roman', Times, serif;
             background-color: #f7f9fc;
@@ -15,7 +15,7 @@
             color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px; /* زيادة العرض الأقصى للحاوية */
             margin: 30px auto;
             background: white;
             padding: 30px;
@@ -97,11 +97,11 @@
             gap: 2px;
             transition: background-color 0.3s, transform 0.2s;
         }
-       button.approve-btn:hover {
+        button.approve-btn:hover {
             background-color: #219653;
             transform: translateY(-2px);
         }
-       button.edit-btn {
+        button.edit-btn {
             background-color: #f39c12;
             color: white;
             border: none;
@@ -119,24 +119,25 @@
         }
         button.edit-btn:hover {
             background-color: #d35400;
-            transform: translateY(-2px)
+            transform: translateY(-2px);
         }
         table {
-            width: 100%;
-            max-width: 1200px;
+            width: 100%; /* الجدول يأخذ العرض الكامل للحاوية */
             border-collapse: collapse;
             margin-top: 30px;
+            margin-right: 0; /* إزالة الهامش من اليمين */
+            margin-left: 0; /* إزالة الهامش من اليسار */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-            table-layout: fixed;
+            table-layout: fixed; /* توزيع الأعمدة بشكل متساوٍ */
         }
         th, td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
-            max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            width: calc(100% / 7); /* توزيع العرض على 7 أعمدة بشكل متساوٍ */
         }
         th {
             background-color: #3498db;
@@ -622,21 +623,21 @@
                 <div class="form-group">
                     <label for="editEmployeeSelect">اسم الموظف:</label>
                     <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
-                    <option value="" disabled selected>اختر اسم الموظف</option>
-                    <option value="11731">محمد علي المجرفي (11731)</option>
-                    <option value="1121">بدر سويدان الشرجي (1121)</option>
-                    <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
-                    <option value="9684">احمد تاصر الشلبي (9684)</option>
-                    <option value="3432">زهران عبدالله الشقصي (3432)</option>
-                    <option value="11218">جاسم يعقوب الفوري (11218)</option>
-                    <option value="11220">امل سعيد الحسنية (11220)</option>
-                    <option value="11551">وفاء عبدالله العريمية (11551)</option>
-                    <option value="13469">يوسف سيف الريامي (13469)</option>
-                    <option value="13534">خالد يعقوب الغزالي (13534)</option>
-                    <option value="11499">محمد حميد الجابري (11499)</option>
-                    <option value="16432">عبير عبدالله الندابية (16432)</option>
-                    <option value="19133">معتصم سالم الجابري (19133)</option>
-                </select>
+                        <option value="" disabled selected>اختر اسم الموظف</option>
+                        <option value="11731">محمد علي المجرفي (11731)</option>
+                        <option value="1121">بدر سويدان الشرجي (1121)</option>
+                        <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
+                        <option value="9684">احمد تاصر الشلبي (9684)</option>
+                        <option value="3432">زهران عبدالله الشقصي (3432)</option>
+                        <option value="11218">جاسم يعقوب الفوري (11218)</option>
+                        <option value="11220">امل سعيد الحسنية (11220)</option>
+                        <option value="11551">وفاء عبدالله العريمية (11551)</option>
+                        <option value="13469">يوسف سيف الريامي (13469)</option>
+                        <option value="13534">خالد يعقوب الغزالي (13534)</option>
+                        <option value="11499">محمد حميد الجابري (11499)</option>
+                        <option value="16432">عبير عبدالله الندابية (16432)</option>
+                        <option value="19133">معتصم سالم الجابري (19133)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editStartDate">تاريخ بداية الإجازة:</label>
@@ -876,7 +877,7 @@
             .then(response => response.json())
             .then(result => {
                 if (result.status === 'success' && result.data.success) {
-                    showAlert('adminLoginAlert', 'تسجيل الدخول ناجح!', 'success');
+                    showAlert('adminLoginAlert', 'تم تسجيل الدخول بنجاح!', 'success');
                     setTimeout(showAdminPage, 1000);
                 } else {
                     showAlert('adminLoginAlert', result.data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'danger');
@@ -1217,20 +1218,21 @@
             document.getElementById('employeeName').value = '';
             document.getElementById('vacationDays').value = '';
         }
-         // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
+
+        // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
         document.getElementById('adminUsername').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
                 adminLogin(); // استدعاء دالة تسجيل الدخول
-           }
-       });
+            }
+        });
 
-      document.getElementById('adminPassword').addEventListener('keypress', function(event) {
-          if (event.key === 'Enter') {
-              event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
-              adminLogin(); // استدعاء دالة تسجيل الدخول
-         }
-      });
+        document.getElementById('adminPassword').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
+                adminLogin(); // استدعاء دالة تسجيل الدخول
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
