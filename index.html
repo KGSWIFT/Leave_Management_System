@@ -6,7 +6,6 @@
     <title>KG SWIFT لإدارة الإجازات</title>
     <link rel="icon" type="image/png" href="KG_SWIFT2.ico">
     <style>
-        /* النمط الأصلي محافظ عليه بالكامل */
         body {
             font-family: 'Times New Roman', Times, serif;
             background-color: #f7f9fc;
@@ -15,7 +14,7 @@
             color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 30px auto;
             background: white;
             padding: 30px;
@@ -87,45 +86,65 @@
             border: none;
             border-radius: 5px;
             padding: 6px 12px;
-            font-size: 10px;
+            font-size: 14px;
             cursor: pointer;
             margin: 0 4px;
-            min-width: 30px;
+            min-width: 90px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 8px;
             transition: background-color 0.3s, transform 0.2s;
         }
-       button.approve-btn:hover {
+        button.approve-btn:hover {
             background-color: #219653;
             transform: translateY(-2px);
         }
-       button.edit-btn {
+        button.edit-btn {
             background-color: #f39c12;
             color: white;
             border: none;
             border-radius: 5px;
             padding: 6px 12px;
-            font-size: 10px;
+            font-size: 14px;
             cursor: pointer;
             margin: 0 4px;
-            min-width: 30px;
+            min-width: 90px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 8px;
             transition: background-color 0.3s, transform 0.2s;
         }
         button.edit-btn:hover {
             background-color: #d35400;
-            transform: translateY(-2px)
+            transform: translateY(-2px);
+        }
+        button.delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 0 4px;
+            min-width: 90px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button.delete-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
         }
         table {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1400px;
             border-collapse: collapse;
-            margin-top: 30px;
+            margin: 30px auto;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
             table-layout: fixed;
         }
@@ -133,6 +152,7 @@
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
+            width: 11.67%;
             max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -149,32 +169,16 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-        button.delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 6px 12px;
-            font-size: 10px;
-            cursor: pointer;
-            margin: 0 4px;
-            min-width: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        button.delete-btn:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-        }
         td.actions {
             display: flex;
             flex-wrap: nowrap;
-            gap: 5px;
+            gap: 4px; /* تقليل المسافة بين الأزرار من 8px إلى 4px */
             justify-content: center;
             align-items: center;
+        }
+        #adminVacationsTable th:last-child,
+        #adminVacationsTable td:last-child {
+            width: 30%;
         }
         .alert {
             padding: 15px;
@@ -408,6 +412,23 @@
             margin-top: 20px;
             margin-bottom: 0;
         }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .loading::after {
+            content: 'جاري التحميل...';
+            color: white;
+            font-size: 24px;
+        }
         @media print {
             body * {
                 visibility: hidden;
@@ -462,23 +483,21 @@
             .footer-text {
                 font-size: 12px;
             }
-        }
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .loading::after {
-            content: 'جاري التحميل...';
-            color: white;
-            font-size: 24px;
+            table {
+                max-width: 100%;
+            }
+            th, td {
+                width: auto;
+                max-width: none;
+            }
+            #adminVacationsTable th:last-child,
+            #adminVacationsTable td:last-child {
+                width: auto;
+            }
+            td.actions {
+                flex-wrap: wrap;
+                gap: 2px; /* تقليل المسافة بين الأزرار إلى 2px على الشاشات الصغيرة */
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -621,22 +640,22 @@
                 <input type="hidden" name="id" id="editVacationId">
                 <div class="form-group">
                     <label for="editEmployeeSelect">اسم الموظف:</label>
-                    <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
-                    <option value="" disabled selected>اختر اسم الموظف</option>
-                    <option value="11731">محمد علي المجرفي (11731)</option>
-                    <option value="1121">بدر سويدان الشرجي (1121)</option>
-                    <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
-                    <option value="9684">احمد تاصر الشلبي (9684)</option>
-                    <option value="3432">زهران عبدالله الشقصي (3432)</option>
-                    <option value="11218">جاسم يعقوب الفوري (11218)</option>
-                    <option value="11220">امل سعيد الحسنية (11220)</option>
-                    <option value="11551">وفاء عبدالله العريمية (11551)</option>
-                    <option value="13469">يوسف سيف الريامي (13469)</option>
-                    <option value="13534">خالد يعقوب الغزالي (13534)</option>
-                    <option value="11499">محمد حميد الجابري (11499)</option>
-                    <option value="16432">عبير عبدالله الندابية (16432)</option>
-                    <option value="19133">معتصم سالم الجابري (19133)</option>
-                </select>
+                    <select id="editEmployeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
+                        <option value="" disabled selected>اختر اسم الموظف</option>
+                        <option value="11731">محمد علي المجرفي (11731)</option>
+                        <option value="1121">بدر سويدان الشرجي (1121)</option>
+                        <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
+                        <option value="9684">احمد تاصر الشلبي (9684)</option>
+                        <option value="3432">زهران عبدالله الشقصي (3432)</option>
+                        <option value="11218">جاسم يعقوب الفوري (11218)</option>
+                        <option value="11220">امل سعيد الحسنية (11220)</option>
+                        <option value="11551">وفاء عبدالله العريمية (11551)</option>
+                        <option value="13469">يوسف سيف الريامي (13469)</option>
+                        <option value="13534">خالد يعقوب الغزالي (13534)</option>
+                        <option value="11499">محمد حميد الجابري (11499)</option>
+                        <option value="16432">عبير عبدالله الندابية (16432)</option>
+                        <option value="19133">معتصم سالم الجابري (19133)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editStartDate">تاريخ بداية الإجازة:</label>
@@ -787,7 +806,6 @@
             })
             .then(response => response.text())
             .then(text => {
-                // معالجة JSONP
                 const callbackStart = text.indexOf('(') + 1;
                 const callbackEnd = text.lastIndexOf(')');
                 const jsonData = JSON.parse(text.substring(callbackStart, callbackEnd));
@@ -995,11 +1013,11 @@
                     <td>${vacation.days}</td>
                     <td><span class="${statusClass}">${statusText}</span></td>
                     <td class="no-print actions">
-                        <button class="edit-btn" data-id="${vacation.id}">تعديل</button>
-                        <button class="delete-btn" data-id="${vacation.id}">حذف</button>
+                        <button class="edit-btn" data-id="${vacation.id}"><i class="fas fa-edit"></i> تعديل</button>
+                        <button class="delete-btn" data-id="${vacation.id}"><i class="fas fa-trash"></i> حذف</button>
                         ${vacation.status === 'pending' ? `
-                            <button class="approve-btn" data-id="${vacation.id}" data-action="approve">اعتماد</button>
-                            <button class="delete-btn" data-id="${vacation.id}" data-action="reject">رفض</button>
+                            <button class="approve-btn" data-id="${vacation.id}" data-action="approve"><i class="fas fa-check"></i> اعتماد</button>
+                            <button class="delete-btn" data-id="${vacation.id}" data-action="reject"><i class="fas fa-times"></i> رفض</button>
                         ` : ''}
                     </td>
                 `;
@@ -1217,20 +1235,20 @@
             document.getElementById('employeeName').value = '';
             document.getElementById('vacationDays').value = '';
         }
-         // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
+
         document.getElementById('adminUsername').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
-                adminLogin(); // استدعاء دالة تسجيل الدخول
-           }
-       });
+                event.preventDefault();
+                adminLogin();
+            }
+        });
 
-      document.getElementById('adminPassword').addEventListener('keypress', function(event) {
-          if (event.key === 'Enter') {
-              event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
-              adminLogin(); // استدعاء دالة تسجيل الدخول
-         }
-      });
+        document.getElementById('adminPassword').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                adminLogin();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
