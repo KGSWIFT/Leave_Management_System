@@ -15,7 +15,7 @@
             color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 30px auto;
             background: white;
             padding: 30px;
@@ -123,9 +123,9 @@
         }
         table {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             border-collapse: collapse;
-            margin-top: 30px;
+            margin-top: 30px auto;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
             table-layout: fixed;
         }
@@ -172,10 +172,13 @@
         td.actions {
             display: flex;
             flex-wrap: nowrap;
-            gap: 5px;
+            gap: 8px;
             justify-content: center;
             align-items: center;
         }
+         #adminVacationsTable th:last-child,
+        #adminVacationsTable td:last-child {
+            width: 25%; /* زيادة عرض عمود الإجراءات لاستيعاب الأزرار الكبيرة */
         .alert {
             padding: 15px;
             margin-bottom: 20px;
@@ -462,7 +465,22 @@
             .footer-text {
                 font-size: 12px;
             }
+             table {
+                max-width: 100%; /* ضمان استجابة الجدول على الشاشات الصغيرة */
         }
+              th, td {
+                width: auto; /* إلغاء العرض الثابت على الشاشات الصغيرة */
+                max-width: none;
+            }
+
+             #adminVacationsTable th:last-child,
+              #adminVacationsTable td:last-child {
+                width: auto; /* إلغاء العرض الثابت لعمود الإجراءات */
+            }
+            td.actions {
+                flex-wrap: wrap; /* السماح بتكديس الأزرار على الشاشات الصغيرة */
+                gap: 4px;
+                }
         .loading {
             position: fixed;
             top: 0;
