@@ -510,7 +510,7 @@
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
-        <h1>نظام إدخال الإجازات - صفحة الموظف</h1>
+        <h1>نظام إدخال الإجازات - الإداريين</h1>
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
             <div class="form-group">
@@ -1200,6 +1200,20 @@
             document.getElementById('employeeName').value = '';
             document.getElementById('vacationDays').value = '';
         }
+         // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
+        document.getElementById('adminUsername').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
+                adminLogin(); // استدعاء دالة تسجيل الدخول
+           }
+       });
+
+      document.getElementById('adminPassword').addEventListener('keypress', function(event) {
+          if (event.key === 'Enter') {
+              event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
+              adminLogin(); // استدعاء دالة تسجيل الدخول
+         }
+      });
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
