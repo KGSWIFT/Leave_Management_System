@@ -97,11 +97,11 @@
             gap: 2px;
             transition: background-color 0.3s, transform 0.2s;
         }
-       button.approve-btn:hover {
+        button.approve-btn:hover {
             background-color: #219653;
             transform: translateY(-2px);
         }
-       button.edit-btn {
+        button.edit-btn {
             background-color: #f39c12;
             color: white;
             border: none;
@@ -137,14 +137,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-            td:first-child,
-            th:first-child {
-             max-width: 150px;
+        td:first-child,
+        th:first-child {
+            max-width: 150px;
             width: 150px;
         }
         /* تكبير خانة الإجراءات */
-            td:last-child,
-            th:last-child {
+        td:last-child,
+        th:last-child {
             max-width: 190px;
             width: 190px;
         }
@@ -631,22 +631,22 @@
                 <input type="hidden" name="id" id="editVacationId">
                 <div class="form-group">
                     <label for="editEmployeeSelect">اسم الموظف:</label>
-                    <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
-                    <option value="" disabled selected>اختر اسم الموظف</option>
-                    <option value="11731">محمد علي المجرفي (11731)</option>
-                    <option value="1121">بدر سويدان الشرجي (1121)</option>
-                    <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
-                    <option value="9684">احمد تاصر الشلبي (9684)</option>
-                    <option value="3432">زهران عبدالله الشقصي (3432)</option>
-                    <option value="11218">جاسم يعقوب الفوري (11218)</option>
-                    <option value="11220">امل سعيد الحسنية (11220)</option>
-                    <option value="11551">وفاء عبدالله العريمية (11551)</option>
-                    <option value="13469">يوسف سيف الريامي (13469)</option>
-                    <option value="13534">خالد يعقوب الغزالي (13534)</option>
-                    <option value="11499">محمد حميد الجابري (11499)</option>
-                    <option value="16432">عبير عبدالله الندابية (16432)</option>
-                    <option value="19133">معتصم سالم الجابري (19133)</option>
-                </select>
+                    <select id="editEmployeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
+                        <option value="" disabled selected>اختر اسم الموظف</option>
+                        <option value="11731">محمد علي المجرفي (11731)</option>
+                        <option value="1121">بدر سويدان الشرجي (1121)</option>
+                        <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
+                        <option value="9684">احمد تاصر الشلبي (9684)</option>
+                        <option value="3432">زهران عبدالله الشقصي (3432)</option>
+                        <option value="11218">جاسم يعقوب الفوري (11218)</option>
+                        <option value="11220">امل سعيد الحسنية (11220)</option>
+                        <option value="11551">وفاء عبدالله العريمية (11551)</option>
+                        <option value="13469">يوسف سيف الريامي (13469)</option>
+                        <option value="13534">خالد يعقوب الغزالي (13534)</option>
+                        <option value="11499">محمد حميد الجابري (11499)</option>
+                        <option value="16432">عبير عبدالله الندابية (16432)</option>
+                        <option value="19133">معتصم سالم الجابري (19133)</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editStartDate">تاريخ بداية الإجازة:</label>
@@ -748,9 +748,25 @@
             return vacations.slice(start, end);
         }
 
+        // دالة للتحقق من تداخل التواريخ
+        function hasDateOverlap(employeeId, startDate, endDate, excludeId = null) {
+            const newStart = new Date(startDate);
+            const newEnd = new Date(endDate);
+            
+            return vacations.some(vacation => {
+                if (vacation.employeeId !== employeeId || vacation.id === excludeId) return false;
+                
+                const existingStart = new Date(vacation.startDate);
+                const existingEnd = new Date(vacation.endDate);
+                
+                // التحقق من التداخل: إذا كان تاريخ البداية أو النهاية للإجازة الجديدة يقع ضمن فترة إجازة موجودة
+                return (newStart <= existingEnd && newEnd >= existingStart);
+            });
+        }
+
         function renderPagination(totalItems, isAdmin = false) {
             const totalPages = Math.ceil(totalItems / perPage);
-            const paginationContainer = document.getElementById(isAdmin ? 'adminPagination' : 'employeePagination');
+            const paginationContainer = document.getElementById(isAdmin ? 'adminPagination.0/adminPagination' : 'employeePagination');
             paginationContainer.innerHTML = '';
 
             const prevButton = document.createElement('button');
@@ -912,6 +928,12 @@
             const newEnd = new Date(endDate);
             if (newEnd < newStart) {
                 showAlert('employeeAlertMessage', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.', 'danger');
+                return;
+            }
+
+            // التحقق من التداخل للموظف
+            if (hasDateOverlap(employeeId, startDate, endDate)) {
+                showAlert('employeeAlertMessage', 'تداخل في تواريخ الإجازة، يرجى مراجعة رئيس القسم.', 'danger');
                 return;
             }
 
@@ -1157,6 +1179,7 @@
                 return;
             }
 
+            // تحديث البيانات دون التحقق من التداخل للمسؤول
             document.getElementById('editEmployeeName').value = employees[employeeId];
             document.getElementById('editVacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
 
@@ -1227,20 +1250,21 @@
             document.getElementById('employeeName').value = '';
             document.getElementById('vacationDays').value = '';
         }
-         // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
+
+        // إضافة مستمع حدث للضغط على Enter في حقول تسجيل الدخول
         document.getElementById('adminUsername').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
-                adminLogin(); // استدعاء دالة تسجيل الدخول
-           }
-       });
+                event.preventDefault();
+                adminLogin();
+            }
+        });
 
-      document.getElementById('adminPassword').addEventListener('keypress', function(event) {
-          if (event.key === 'Enter') {
-              event.preventDefault(); // منع السلوك الافتراضي للمفتاح Enter
-              adminLogin(); // استدعاء دالة تسجيل الدخول
-         }
-      });
+        document.getElementById('adminPassword').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                adminLogin();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
