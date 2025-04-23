@@ -1383,4 +1383,119 @@
             const newStart = new Date(startDate);
             const newEnd = new Date(endDate);
             if (newEnd < newStart) {
-                showAlert('adminAlert
+                showAlert('adminAlertMessage', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.', 'danger');
+                return;
+            }
+
+            document.getElementById('editEmployeeName').value = employees[employeeId];
+            document.getElementById('editVacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
+
+            showLoading();
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    showAlert('adminAlertMessage', result.data.message, 'success');
+                    loadVacationsData(true);
+                    closeEditModal();
+                } else {
+                    showAlert('adminAlertMessage', result.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showAlert('adminAlertMessage', `خطأ في تحديث الإجازة: ${error.message}`, 'danger');
+            })
+            .finally(() => hideLoading());
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+
+        document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
+        document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
+
+        document.getElementById('adminUsername').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const password = document.getElementById('adminPassword').value;
+                if (password) adminLogin();
+            }
+        });
+
+        document.getElementById('adminPassword').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                const username = document.getElementById('adminUsername').value;
+                if (username) adminLogin();
+            }
+        });
+
+        document.getElementById('saveButton').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "vacations.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        document.getElementById('saveAdminButton').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "vacations.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+
+        document.getElementById('printButton').addEventListener('click', () => window.print());
+        document.getElementById('printAdminButton').addEventListener('click', () => window.print());
+
+        document.getElementById('importJsonButton').addEventListener('click', () => {
+            document.getElementById('jsonFileInput').click();
+        });
+
+        document.getElementById('jsonFileInput').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedVacations = JSON.parse(e.target.result);
+                        showLoading();
+                        const params = new URLSearchParams({
+                            action: 'import',
+                            data: JSON.stringify(importedVacations)
+                        });
+
+                        fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            body: params
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.status === 'success') {
+                                showAlert('adminAlertMessage', result.data.message, 'success');
+                                loadVacationsData(true);
+                            } else {
+                                showAlert('adminAlertMessage', result.message, 'danger');
+                            }
+                        })
+                        .catch(error => {
+                            showAlert('adminAlertMessage', `خطأ في استيراد البيانات: ${error.message}`, 'danger');
+                        })
+                        .finally(() => hideLoading());
+                    } catch (error) {
+                        showAlert('adminAlertMessage', 'خطأ في قراءة الملف: تأكد من أنه ملف JSON صالح.', 'danger');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+    </script>
+</body>
+</html>
