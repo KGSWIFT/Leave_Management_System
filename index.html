@@ -259,19 +259,82 @@
         }
         .modal {
             position: fixed;
-            z-index: 1000;
-            width: 400px;
-            max-width: 90%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
         .modal-content {
-            background-color: white;
+            background: linear-gradient(135deg, #ffffff, #e8f0fe);
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
             text-align: center;
             position: relative;
+            width: 400px;
+            max-width: 90%;
+            border: 1px solid #3498db;
+        }
+        .modal-content h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .modal-content p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .modal-content .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .modal-content .close:hover {
+            color: #c0392b;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .modal-buttons button {
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-buttons .confirm-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+        .modal-buttons .confirm-btn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .modal-buttons .cancel-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
         .modal-header {
             display: flex;
@@ -537,6 +600,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
+
     <div class="loading" id="loadingIndicator"></div>
 
     <div class="container" id="homePage">
@@ -724,9 +828,9 @@
             <span class="close" onclick="closeConfirmationModal()">×</span>
             <h2>تأكيد إضافة الإجازة</h2>
             <p>هل أنت متأكد من إضافة طلب الإجازة؟</p>
-            <div class="buttons" style="justify-content: center; gap: 20px;">
-                <button onclick="confirmAddVacation()">نعم</button>
-                <button onclick="closeConfirmationModal()">إلغاء</button>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="confirmAddVacation()">نعم</button>
+                <button class="cancel-btn" onclick="closeConfirmationModal()">إلغاء</button>
             </div>
         </div>
     </div>
@@ -986,7 +1090,7 @@
             document.getElementById('vacationId').value = Date.now().toString();
             document.getElementById('employeeName').value = employees[employeeId];
             document.getElementById('vacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
-            document.getElementById('confirmationModal').style.display = 'block';
+            document.getElementById('confirmationModal').style.display = 'flex';
         }
 
         function confirmAddVacation() {
@@ -1418,7 +1522,6 @@
             }
         });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935319c3a8f0bd2a',t:'MTc0NTQ3MTQ5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
-
-
