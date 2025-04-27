@@ -378,7 +378,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: move;
             background-color: #f1f1f1;
             padding: 5px 10px;
             border-top-left-radius: 10px;
@@ -392,18 +391,41 @@
             display: flex;
             gap: 5px;
         }
-        .close, .minimize {
+        .minimize {
             font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             border: none;
             background: none;
-        }
-        .close:hover {
-            color: #e74c3c;
+            color: #7f8c8d;
+            transition: color 0.3s;
         }
         .minimize:hover {
             color: #3498db;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-footer button {
+            width: 120px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .modal-footer .save-btn {
+            background-color: #27ae60;
+        }
+        .modal-footer .save-btn:hover {
+            background-color: #219653;
+        }
+        .modal-footer .close-btn {
+            background-color: #e74c3c;
+        }
+        .modal-footer .close-btn:hover {
+            background-color: #c0392b;
         }
         .status-pending {
             background-color: #ffeaa7;
@@ -809,12 +831,10 @@
 
     <div id="editVacationModal" class="modal">
         <div class="modal-content">
-           (reverse the rest of the content remains unchanged)
             <div class="modal-header">
                 <h2 class="modal-title">تعديل الإجازة</h2>
                 <div class="modal-buttons">
                     <button class="minimize" onclick="minimizeModal()">-</button>
-                    <button class="close" onclick="closeEditModal()">×</button>
                 </div>
             </div>
             <form id="editVacationForm">
@@ -857,7 +877,10 @@
                 </div>
                 <input type="hidden" name="employeeName" id="editEmployeeName">
                 <input type="hidden" name="days" id="editVacationDays">
-                <button type="button" onclick="submitEditVacation()">حفظ التغييرات</button>
+                <div class="modal-footer">
+                    <button type="button" class="save-btn" onclick="submitEditVacation()">حفظ التغييرات</button>
+                    <button type="button" class="close-btn" onclick="closeEditModal()">إنهاء</button>
+                </div>
             </form>
         </div>
     </div>
@@ -897,8 +920,6 @@
         let vacations = [];
         let currentPage = 1;
         const perPage = 10;
-        let isDragging = false;
-        let currentX, currentY, initialX, initialY;
 
         function showLoading() {
             document.getElementById('loadingIndicator').style.display = 'flex';
@@ -1394,14 +1415,32 @@
         }
 
         function makeModalDraggable(modal) {
-            const header = modal.querySelector('.modal-header');
-            header.addEventListener('mousedown', startDragging);
+            const modalHeader = modal.querySelector('.modal-header');
+            if (!modalHeader) return; // إذا لم يكن هناك رأس للنافذة، لا تفعل شيئًا
+
+            let isDragging = false;
+            let currentX, currentY, initialX, initialY;
+
+            // إضافة خاصية المؤشر للإشارة إلى إمكانية السحب
+            modalHeader.style.cursor = 'move';
+
+            modalHeader.addEventListener('mousedown', startDragging);
 
             function startDragging(e) {
+                // تجاهل النقر على العناصر التفاعلية
+                const targetTag = e.target.tagName.toLowerCase();
+                if (['input', 'select', 'button', 'textarea'].includes(targetTag)) return;
+
                 e.preventDefault();
                 if (modal.dataset.minimized === 'true') return;
+
+                // حساب الإحداثيات الأولية بناءً على موضع النافذة الحالي
+                const rect = modal.getBoundingClientRect();
+                currentX = rect.left;
+                currentY = rect.top;
                 initialX = e.clientX - currentX;
                 initialY = e.clientY - currentY;
+
                 isDragging = true;
                 document.addEventListener('mousemove', drag);
                 document.addEventListener('mouseup', stopDragging);
@@ -1412,9 +1451,11 @@
                     e.preventDefault();
                     currentX = e.clientX - initialX;
                     currentY = e.clientY - initialY;
+
+                    // تحديد موضع النافذة
                     modal.style.left = currentX + 'px';
                     modal.style.top = currentY + 'px';
-                    modal.style.transform = 'none';
+                    modal.style.transform = 'none'; // إزالة التحويل لضمان التحكم الكامل
                 }
             }
 
@@ -1424,9 +1465,8 @@
                 document.removeEventListener('mouseup', stopDragging);
             }
 
+            // تعيين النافذة كمطلقة إذا لم تكن كذلك
             modal.style.position = 'absolute';
-            currentX = modal.offsetLeft;
-            currentY = modal.offsetTop;
         }
 
         function submitEditVacation() {
@@ -1563,5 +1603,7 @@
     </script>
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935319c3a8f0bd2a',t:'MTc0NTQ3MTQ5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9353ed75e91b675a',t:'MTc0NTQ4MDE2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9354bf1d2eedbd54',t:'MTc0NTQ4ODc1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'936dc4bb8b8dbfff',t:'MTc0NTc1MTEyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
