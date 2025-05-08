@@ -1,49 +1,11 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KG SWIFT لإدارة الإجازات</title>
     <link rel="icon" type="image/png" href="KG_SWIFT2.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -411,6 +373,7 @@
         }
         .modal-footer button {
             width: 120px;
+;
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
@@ -657,7 +620,6 @@
             background-color: #2980b9;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <script type="text/javascript">
@@ -673,23 +635,15 @@
                 var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
                 var firstSheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
                 var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
                 var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
                 var headerRowIndex = filteredData.findIndex((row, index) =>
                   row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
                 );
-                // Fallback
                 if (headerRowIndex === -1 || headerRowIndex > 25) {
                   headerRowIndex = 0;
                 }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
                 csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
                 return csv;
             } catch (e) {
@@ -790,7 +744,7 @@
                 <tr>
                     <th>اسم الموظف</th>
                     <th>الرقم الوظيفي</th>
-                    <th>تاريخ البداية</th>
+                    <th>تاري amm البداية</th>
                     <th>تاريخ النهاية</th>
                     <th>عدد الأيام</th>
                     <th class="no-print">الحالة</th>
@@ -900,7 +854,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoUwpHfldlCwCoQ0pDhhKTw50Jp3NRUT4yTbEMXF_bN_EuJhINLwGln3jWGMVdNWw7/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLRCQkH1DVLsGwCNKjo-v9yD1HtAU38shpOLN_FMydE_ft8XzKYOM_ybcmDydD6nZF/exec";
         const employees = {
             "11731": "محمد علي المجرفي",
             "1121": "بدر سويدان الشرجي",
@@ -1157,6 +1111,11 @@
             const form = document.getElementById('vacationForm');
             const formData = new FormData(form);
             const params = new URLSearchParams(formData);
+            const employeeId = formData.get('employeeId');
+            const employeeName = formData.get('employeeName');
+            const startDate = formData.get('startDate');
+            const endDate = formData.get('endDate');
+            const days = formData.get('days');
 
             showLoading();
             fetch(GOOGLE_SCRIPT_URL, {
@@ -1167,6 +1126,13 @@
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('employeeAlertMessage', result.data.message, 'success');
+                    sendAdminNotification({
+                        employeeId,
+                        employeeName,
+                        startDate: formatDate(startDate),
+                        endDate: formatDate(endDate),
+                        days
+                    });
                     loadVacationsData();
                     resetForm();
                 } else {
@@ -1179,6 +1145,31 @@
             .finally(() => {
                 closeConfirmationModal();
                 hideLoading();
+            });
+        }
+
+        function sendAdminNotification(vacationData) {
+            const params = new URLSearchParams({
+                action: 'sendAdminEmail',
+                employeeId: vacationData.employeeId,
+                employeeName: vacationData.employeeName,
+                startDate: vacationData.startDate,
+                endDate: vacationData.endDate,
+                days: vacationData.days
+            });
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status !== 'success') {
+                    console.error('فشل إرسال بريد المسؤول:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('خطأ في إرسال بريد المسؤول:', error);
             });
         }
 
@@ -1319,6 +1310,16 @@
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('adminAlertMessage', result.data.message, 'success');
+                    const vacation = vacations.find(v => v.id === id);
+                    if (vacation) {
+                        sendEmployeeApprovalNotification({
+                            employeeId: vacation.employeeId,
+                            employeeName: vacation.employeeName,
+                            startDate: formatDate(vacation.startDate),
+                            endDate: formatDate(vacation.endDate),
+                            days: vacation.days
+                        });
+                    }
                     loadVacationsData(true);
                 } else {
                     showAlert('adminAlertMessage', result.message, 'danger');
@@ -1328,6 +1329,31 @@
                 showAlert('adminAlertMessage', `خطأ في اعتماد الإجازة: ${error.message}`, 'danger');
             })
             .finally(() => hideLoading());
+        }
+
+        function sendEmployeeApprovalNotification(vacationData) {
+            const params = new URLSearchParams({
+                action: 'sendEmployeeApprovalEmail',
+                employeeId: vacationData.employeeId,
+                employeeName: vacationData.employeeName,
+                startDate: vacationData.startDate,
+                endDate: vacationData.endDate,
+                days: vacationData.days
+            });
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status !== 'success') {
+                    console.error('فشل إرسال بريد الموافقة للموظف:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('خطأ في إرسال بريد الموافقة للموظف:', error);
+            });
         }
 
         function rejectVacation(id) {
@@ -1416,25 +1442,22 @@
 
         function makeModalDraggable(modal) {
             const modalHeader = modal.querySelector('.modal-header');
-            if (!modalHeader) return; // إذا لم يكن هناك رأس للنافذة، لا تفعل شيئًا
+            if (!modalHeader) return;
 
             let isDragging = false;
             let currentX, currentY, initialX, initialY;
 
-            // إضافة خاصية المؤشر للإشارة إلى إمكانية السحب
             modalHeader.style.cursor = 'move';
 
             modalHeader.addEventListener('mousedown', startDragging);
 
             function startDragging(e) {
-                // تجاهل النقر على العناصر التفاعلية
                 const targetTag = e.target.tagName.toLowerCase();
                 if (['input', 'select', 'button', 'textarea'].includes(targetTag)) return;
 
                 e.preventDefault();
                 if (modal.dataset.minimized === 'true') return;
 
-                // حساب الإحداثيات الأولية بناءً على موضع النافذة الحالي
                 const rect = modal.getBoundingClientRect();
                 currentX = rect.left;
                 currentY = rect.top;
@@ -1452,20 +1475,18 @@
                     currentX = e.clientX - initialX;
                     currentY = e.clientY - initialY;
 
-                    // تحديد موضع النافذة
                     modal.style.left = currentX + 'px';
                     modal.style.top = currentY + 'px';
-                    modal.style.transform = 'none'; // إزالة التحويل لضمان التحكم الكامل
+                    modal.style.transform = 'none';
                 }
             }
 
-            function stopDragging() {
+            function stop dragging() {
                 isDragging = false;
                 document.removeEventListener('mousemove', drag);
                 document.removeEventListener('mouseup', stopDragging);
             }
 
-            // تعيين النافذة كمطلقة إذا لم تكن كذلك
             modal.style.position = 'absolute';
         }
 
@@ -1476,7 +1497,7 @@
 
             const employeeId = document.getElementById('editEmployeeSelect').value;
             const startDate = document.getElementById('editStartDate').value;
-            const endDate = document.getElementById('editEndDate').value;
+            const endDate = document.getElementByCqId('editEndDate').value;
             const status = document.getElementById('editStatus').value;
 
             if (!employeeId || !startDate || !endDate || !status) {
@@ -1506,104 +1527,3 @@
                     loadVacationsData(true);
                     closeEditModal();
                 } else {
-                    showAlert('adminAlertMessage', result.message, 'danger');
-                }
-            })
-            .catch(error => {
-                showAlert('adminAlertMessage', `خطأ في تحديث الإجازة: ${error.message}`, 'danger');
-            })
-            .finally(() => hideLoading());
-        }
-
-        function closeConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
-
-        document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
-        document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
-
-        document.getElementById('adminUsername').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const password = document.getElementById('adminPassword').value;
-                if (password) adminLogin();
-            }
-        });
-
-        document.getElementById('adminPassword').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const username = document.getElementById('adminUsername').value;
-                if (username) adminLogin();
-            }
-        });
-
-        document.getElementById('saveButton').addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "vacations.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        });
-
-        document.getElementById('saveAdminButton').addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "vacations.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        });
-
-        document.getElementById('printButton').addEventListener('click', () => window.print());
-        document.getElementById('printAdminButton').addEventListener('click', () => window.print());
-
-        document.getElementById('importJsonButton').addEventListener('click', () => {
-            document.getElementById('jsonFileInput').click();
-        });
-
-        document.getElementById('jsonFileInput').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedVacations = JSON.parse(e.target.result);
-                        showLoading();
-                        const params = new URLSearchParams({
-                            action: 'import',
-                            data: JSON.stringify(importedVacations)
-                        });
-
-                        fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            body: params
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.status === 'success') {
-                                showAlert('adminAlertMessage', result.data.message, 'success');
-                                loadVacationsData(true);
-                            } else {
-                                showAlert('adminAlertMessage', result.message, 'danger');
-                            }
-                        })
-                        .catch(error => {
-                            showAlert('adminAlertMessage', `خطأ في استيراد البيانات: ${error.message}`, 'danger');
-                        })
-                        .finally(() => hideLoading());
-                    } catch (error) {
-                        showAlert('adminAlertMessage', 'خطأ في قراءة الملف: تأكد من أنه ملف JSON صالح.', 'danger');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-    </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935319c3a8f0bd2a',t:'MTc0NTQ3MTQ5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9353ed75e91b675a',t:'MTc0NTQ4MDE2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9354bf1d2eedbd54',t:'MTc0NTQ4ODc1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'936dc4bb8b8dbfff',t:'MTc0NTc1MTEyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body>
-</html>
