@@ -621,37 +621,36 @@
     </style>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script type="text/javascript">
         var gk_isXlsx = false;
         var gk_xlsxFileLookup = {};
         var gk_fileData = {};
         function filledCell(cell) {
-            return cell !== '' && cell != null;
+          return cell !== '' && cell != null;
         }
         function loadFileData(filename) {
-            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-                try {
-                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                    var firstSheetName = workbook.SheetNames[0];
-                    var worksheet = workbook.Sheets[firstSheetName];
-                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                    var filteredData = jsonData.filter(row => row.some(filledCell));
-                    var headerRowIndex = filteredData.findIndex((row, index) =>
-                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                    );
-                    if (headerRowIndex === -1 || headerRowIndex > 25) {
-                        headerRowIndex = 0;
-                    }
-                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                    return csv;
-                } catch (e) {
-                    console.error(e);
-                    return "";
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
                 }
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
             }
-            return gk_fileData[filename] || "";
+        }
+        return gk_fileData[filename] || "";
         }
     </script>
 
@@ -661,12 +660,12 @@
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System</h1>
         <div class="home-options">
-            <div class="option-card employee-card" onclick="showEmployeePage()">
+            <div class="option-card employee-card">
                 <i class="fas fa-user"></i>
                 <h2>موظف</h2>
                 <p>تقديم طلب إجازة جديد وعرض حالة الإجازات المقدمة</p>
             </div>
-            <div class="option-card admin-card" onclick="showAdminLogin()">
+            <div class="option-card admin-card">
                 <i class="fas fa-user-shield"></i>
                 <h2>مسؤول النظام</h2>
                 <p>إدارة طلبات الإجازات واعتمادها</p>
@@ -735,8 +734,8 @@
             <div class="buttons">
                 <button type="button" id="addButton" onclick="showConfirmationModal()">إضافة الإجازة</button>
                 <button type="button" id="resetButton" onclick="resetForm()">إعادة تعيين</button>
-                <button type="button" id="saveButton" onclick="exportEmployeeData()">تصدير البيانات</button>
-                <button type="button" id="printButton" onclick="printEmployeeTable()">طباعة الجدول</button>
+                <button type="button" id="saveButton">تصدير البيانات</button>
+                <button type="button" id="printButton">طباعة الجدول</button>
             </div>
         </form>
         <table id="vacationsTable">
@@ -761,10 +760,10 @@
         <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
-            <button id="printAdminButton" onclick="printAdminTable()">طباعة الجدول</button>
-            <button id="saveAdminButton" onclick="exportAdminData()">تصدير البيانات</button>
-            <button id="importJsonButton" onclick="triggerJsonImport()">استيراد البيانات</button>
-            <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="importJsonData()">
+            <button id="printAdminButton">طباعة الجدول</button>
+            <button id="saveAdminButton">تصدير البيانات</button>
+            <button id="importJsonButton">استيراد البيانات</button>
+            <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
         </div>
         <table id="adminVacationsTable">
             <thead>
@@ -854,7 +853,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylYTaqAPphIi3H0e7KRddbzl1OmFUIoaqHo_WHlsvSbJEq2ezL9rlFA4XeXFIlDiID/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJsN5uSxkzggQoRV1mhu5VDgjbHjEp6yynOnXjTI87bralGCu9ZCffEvWa1Fjld08L/exec";
         const employees = {
             "11731": "محمد علي المجرفي",
             "1121": "بدر سويدان الشرجي",
@@ -1524,16 +1523,6 @@
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('adminAlertMessage', result.data.message, 'success');
-                    if (status === 'approved') {
-                        const vacationData = {
-                            employeeId,
-                            employeeName: employees[employeeId],
-                            startDate: formatDate(startDate),
-                            endDate: formatDate(endDate),
-                            days: document.getElementById('editVacationDays').value
-                        };
-                        sendEmployeeApprovalNotification(vacationData);
-                    }
                     loadVacationsData(true);
                     closeEditModal();
                 } else {
@@ -1550,107 +1539,11 @@
             document.getElementById('confirmationModal').style.display = 'none';
         }
 
-        function exportEmployeeData() {
-            const data = vacations.map(vacation => ({
-                'اسم الموظف': vacation.employeeName,
-                'الرقم الوظيفي': vacation.employeeId,
-                'تاريخ البداية': formatDate(vacation.startDate),
-                'تاريخ النهاية': formatDate(vacation.endDate),
-                'عدد الأيام': vacation.days,
-                'الحالة': vacation.status === 'approved' ? 'تمت الموافقة' :
-                          vacation.status === 'rejected' ? 'مرفوض' : 'قيد الانتظار'
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'إجازات الموظفين');
-            XLSX.writeFile(workbook, 'employee_vacations.xlsx');
-        }
+        document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
+        document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
 
-        function exportAdminData() {
-            const data = vacations.map(vacation => ({
-                'اسم الموظف': vacation.employeeName,
-                'الرقم الوظيفي': vacation.employeeId,
-                'تاريخ البداية': formatDate(vacation.startDate),
-                'تاريخ النهاية': formatDate(vacation.endDate),
-                'عدد الأيام': vacation.days,
-                'حالة الطلب': vacation.status === 'approved' ? 'تمت الموافقة' :
-                              vacation.status === 'rejected' ? 'مرفوض' : 'قيد الانتظار'
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'إجازات المسؤول');
-            XLSX.writeFile(workbook, 'admin_vacations.xlsx');
-        }
-
-        function printEmployeeTable() {
-            window.print();
-        }
-
-        function printAdminTable() {
-            window.print();
-        }
-
-        function triggerJsonImport() {
-            document.getElementById('jsonFileInput').click();
-        }
-
-        function importJsonData() {
-            const fileInput = document.getElementById('jsonFileInput');
-            const file = fileInput.files[0];
-            if (!file) {
-                showAlert('adminAlertMessage', 'يرجى اختيار ملف JSON.', 'danger');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (!Array.isArray(importedData)) {
-                        throw new Error('الملف يجب أن يحتوي على مصفوفة من البيانات.');
-                    }
-
-                    showLoading();
-                    const promises = importedData.map(vacation => {
-                        const params = new URLSearchParams({
-                            action: 'add',
-                            id: vacation.id || Date.now().toString(),
-                            employeeId: vacation.employeeId,
-                            employeeName: employees[vacation.employeeId] || vacation.employeeName,
-                            startDate: vacation.startDate,
-                            endDate: vacation.endDate,
-                            days: vacation.days,
-                            status: vacation.status || 'pending'
-                        });
-
-                        return fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            body: params
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.status !== 'success') {
-                                throw new Error(result.message);
-                            }
-                        });
-                    });
-
-                    Promise.all(promises)
-                        .then(() => {
-                            showAlert('adminAlertMessage', 'تم استيراد البيانات بنجاح.', 'success');
-                            loadVacationsData(true);
-                        })
-                        .catch(error => {
-                            showAlert('adminAlertMessage', `خطأ في استيراد البيانات: ${error.message}`, 'danger');
-                        })
-                        .finally(() => hideLoading());
-                } catch (error) {
-                    showAlert('adminAlertMessage', `خطأ في قراءة الملف: ${error.message}`, 'danger');
-                    hideLoading();
-                }
-            };
-            reader.readAsText(file);
-        }
+        (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93df77eebc6a7bde',t:'MTc0Njk0MzM1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93dfdce27b59b007',t:'MTc0Njk0NzQ5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
