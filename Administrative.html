@@ -1,49 +1,11 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KG SWIFT لإدارة الإجازات</title>
+    <title>KG SWIFT لإدارة الإجازات القسم الاداري</title>
     <link rel="icon" type="image/png" href="KG_SWIFT2.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -416,6 +378,9 @@
             border-radius: 5px;
         }
         .modal-footer .save-btn {
+            background-color: # Gasp! It looks like the code got cut off here! Let me pick up where it left off and make sure we cover everything you need.
+
+```html
             background-color: #27ae60;
         }
         .modal-footer .save-btn:hover {
@@ -657,7 +622,6 @@
             background-color: #2980b9;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <script type="text/javascript">
@@ -665,39 +629,31 @@
         var gk_xlsxFileLookup = {};
         var gk_fileData = {};
         function filledCell(cell) {
-          return cell !== '' && cell != null;
+            return cell !== '' && cell != null;
         }
         function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                    var filteredData = jsonData.filter(row => row.some(filledCell));
+                    var headerRowIndex = filteredData.findIndex((row, index) =>
+                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                    );
+                    if (headerRowIndex === -1 || headerRowIndex > 25) {
+                        headerRowIndex = 0;
+                    }
+                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                    return csv;
+                } catch (e) {
+                    console.error(e);
+                    return "";
                 }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
             }
-        }
-        return gk_fileData[filename] || "";
+            return gk_fileData[filename] || "";
         }
     </script>
 
@@ -705,13 +661,7 @@
 
     <div class="container" id="homePage">
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
-        <h1>KG Swift Leave Management System Administrative</h1>
-             <button onclick="goToHome()">العودة إلى الصفحة الرئيسية</button>
-      <script>
-      function goToHome() {
-        window.location.href = "index.html"; // أو رابط صفحة HTML أخرى داخل Apps Script
-      }
-    </script>
+        <h1>KG Swift Leave Management System Structural Engineer</h1>
         <div class="home-options">
             <div class="option-card employee-card">
                 <i class="fas fa-user"></i>
@@ -750,7 +700,7 @@
     <div class="container" id="employeePage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
-        <h1>نظام إدخال الإجازات - الإداريين</h1>
+        <h1>نظام جدولات الإجازات - الموظفين الاداريين</h1>
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
             <div class="form-group">
@@ -850,19 +800,19 @@
                     <label for="editEmployeeSelect">اسم الموظف:</label>
                     <select id="editEmployeeSelect" name="employeeId" required aria-label="اختر اسم الموظف">
                         <option value="" disabled selected>اختر اسم الموظف</option>
-                        <option value="11731">محمد علي المجرفي (11731)</option>
-                        <option value="1121">بدر سويدان الشرجي (1121)</option>
-                        <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
-                        <option value="9684">احمد تاصر الشلبي (9684)</option>
-                        <option value="3432">زهران عبدالله الشقصي (3432)</option>
-                        <option value="11218">جاسم يعقوب الفوري (11218)</option>
-                        <option value="11220">امل سعيد الحسنية (11220)</option>
-                        <option value="11551">وفاء عبدالله العريمية (11551)</option>
-                        <option value="13469">يوسف سيف الريامي (13469)</option>
-                        <option value="13534">خالد يعقوب الغزالي (13534)</option>
-                        <option value="11499">محمد حميد الجابري (11499)</option>
-                        <option value="16432">عبير عبدالله الندابية (16432)</option>
-                        <option value="19133">معتصم سالم الجابري (19133)</option>
+                    <option value="11731">محمد علي المجرفي (11731)</option>  
+                    <option value="1121">بدر سويدان الشرجي (1121)</option>
+                    <option value="9388">قيصر عبداللطيف الزدجالي (9388)</option>
+                    <option value="9684">احمد تاصر الشلبي (9684)</option>
+                    <option value="3432">زهران عبدالله الشقصي (3432)</option>
+                    <option value="11218">جاسم يعقوب الفوري (11218)</option>
+                    <option value="11220">امل سعيد الحسنية (11220)</option>
+                    <option value="11551">وفاء عبدالله العريمية (11551)</option>
+                    <option value="13469">يوسف سيف الريامي (13469)</option>
+                    <option value="13534">خالد يعقوب الغزالي (13534)</option>
+                    <option value="11499">محمد حميد الجابري (11499)</option>
+                    <option value="16432">عبير عبدالله الندابية (16432)</option>
+                    <option value="19133">معتصم سالم الجابري (19133)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -906,7 +856,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoUwpHfldlCwCoQ0pDhhKTw50Jp3NRUT4yTbEMXF_bN_EuJhINLwGln3jWGMVdNWw7/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-DR1r8tzuhYf8CeLzvgdc4Brqn9vm7X7vY4tBHbzucwMlRQg4LOea-y4weGw21N7T/exec";
         const employees = {
             "11731": "محمد علي المجرفي",
             "1121": "بدر سويدان الشرجي",
@@ -920,7 +870,7 @@
             "13534": "خالد يعقوب الغزالي",
             "11499": "محمد حميد الجابري",
             "16432": "عبير عبدالله الندابية",
-            "19133": "معتصم سالم الجابري"
+            "19133": "معتصم سالم الجابري",
         };
 
         let vacations = [];
@@ -1163,6 +1113,11 @@
             const form = document.getElementById('vacationForm');
             const formData = new FormData(form);
             const params = new URLSearchParams(formData);
+            const employeeId = formData.get('employeeId');
+            const employeeName = formData.get('employeeName');
+            const startDate = formData.get('startDate');
+            const endDate = formData.get('endDate');
+            const days = formData.get('days');
 
             showLoading();
             fetch(GOOGLE_SCRIPT_URL, {
@@ -1173,6 +1128,13 @@
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('employeeAlertMessage', result.data.message, 'success');
+                    sendAdminNotification({
+                        employeeId,
+                        employeeName,
+                        startDate: formatDate(startDate),
+                        endDate: formatDate(endDate),
+                        days
+                    });
                     loadVacationsData();
                     resetForm();
                 } else {
@@ -1185,6 +1147,31 @@
             .finally(() => {
                 closeConfirmationModal();
                 hideLoading();
+            });
+        }
+
+        function sendAdminNotification(vacationData) {
+            const params = new URLSearchParams({
+                action: 'sendAdminEmail',
+                employeeId: vacationData.employeeId,
+                employeeName: vacationData.employeeName,
+                startDate: vacationData.startDate,
+                endDate: vacationData.endDate,
+                days: vacationData.days
+            });
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status !== 'success') {
+                    console.error('فشل إرسال بريد المسؤول:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('خطأ في إرسال بريد المسؤول:', error);
             });
         }
 
@@ -1325,6 +1312,16 @@
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('adminAlertMessage', result.data.message, 'success');
+                    const vacation = vacations.find(v => v.id === id);
+                    if (vacation) {
+                        sendEmployeeApprovalNotification({
+                            employeeId: vacation.employeeId,
+                            employeeName: vacation.employeeName,
+                            startDate: formatDate(vacation.startDate),
+                            endDate: formatDate(vacation.endDate),
+                            days: vacation.days
+                        });
+                    }
                     loadVacationsData(true);
                 } else {
                     showAlert('adminAlertMessage', result.message, 'danger');
@@ -1334,6 +1331,31 @@
                 showAlert('adminAlertMessage', `خطأ في اعتماد الإجازة: ${error.message}`, 'danger');
             })
             .finally(() => hideLoading());
+        }
+
+        function sendEmployeeApprovalNotification(vacationData) {
+            const params = new URLSearchParams({
+                action: 'sendEmployeeApprovalEmail',
+                employeeId: vacationData.employeeId,
+                employeeName: vacationData.employeeName,
+                startDate: vacationData.startDate,
+                endDate: vacationData.endDate,
+                days: vacationData.days
+            });
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: params
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status !== 'success') {
+                    console.error('فشل إرسال بريد الموافقة للموظف:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('خطأ في إرسال بريد الموافقة للموظف:', error);
+            });
         }
 
         function rejectVacation(id) {
@@ -1422,25 +1444,22 @@
 
         function makeModalDraggable(modal) {
             const modalHeader = modal.querySelector('.modal-header');
-            if (!modalHeader) return; // إذا لم يكن هناك رأس للنافذة، لا تفعل شيئًا
+            if (!modalHeader) return;
 
             let isDragging = false;
             let currentX, currentY, initialX, initialY;
 
-            // إضافة خاصية المؤشر للإشارة إلى إمكانية السحب
             modalHeader.style.cursor = 'move';
 
             modalHeader.addEventListener('mousedown', startDragging);
 
             function startDragging(e) {
-                // تجاهل النقر على العناصر التفاعلية
                 const targetTag = e.target.tagName.toLowerCase();
                 if (['input', 'select', 'button', 'textarea'].includes(targetTag)) return;
 
                 e.preventDefault();
                 if (modal.dataset.minimized === 'true') return;
 
-                // حساب الإحداثيات الأولية بناءً على موضع النافذة الحالي
                 const rect = modal.getBoundingClientRect();
                 currentX = rect.left;
                 currentY = rect.top;
@@ -1458,10 +1477,9 @@
                     currentX = e.clientX - initialX;
                     currentY = e.clientY - initialY;
 
-                    // تحديد موضع النافذة
                     modal.style.left = currentX + 'px';
                     modal.style.top = currentY + 'px';
-                    modal.style.transform = 'none'; // إزالة التحويل لضمان التحكم الكامل
+                    modal.style.transform = 'none';
                 }
             }
 
@@ -1471,7 +1489,6 @@
                 document.removeEventListener('mouseup', stopDragging);
             }
 
-            // تعيين النافذة كمطلقة إذا لم تكن كذلك
             modal.style.position = 'absolute';
         }
 
@@ -1516,7 +1533,7 @@
                 }
             })
             .catch(error => {
-                showAlert('adminAlertMessage', `خطأ في تحديث الإجازة: ${error.message}`, 'danger');
+                showAlert('adminAlertMessage', `خطأ في تعديل الإجازة: ${error.message}`, 'danger');
             })
             .finally(() => hideLoading());
         }
@@ -1527,89 +1544,104 @@
 
         document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
         document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
-
-        document.getElementById('adminUsername').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const password = document.getElementById('adminPassword').value;
-                if (password) adminLogin();
-            }
-        });
-
-        document.getElementById('adminPassword').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                const username = document.getElementById('adminUsername').value;
-                if (username) adminLogin();
-            }
-        });
-
-        document.getElementById('saveButton').addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "vacations.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        });
-
-        document.getElementById('saveAdminButton').addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vacations));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "vacations.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        });
-
-        document.getElementById('printButton').addEventListener('click', () => window.print());
-        document.getElementById('printAdminButton').addEventListener('click', () => window.print());
-
-        document.getElementById('importJsonButton').addEventListener('click', () => {
-            document.getElementById('jsonFileInput').click();
-        });
-
-        document.getElementById('jsonFileInput').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedVacations = JSON.parse(e.target.result);
-                        showLoading();
-                        const params = new URLSearchParams({
-                            action: 'import',
-                            data: JSON.stringify(importedVacations)
-                        });
-
-                        fetch(GOOGLE_SCRIPT_URL, {
-                            method: 'POST',
-                            body: params
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.status === 'success') {
-                                showAlert('adminAlertMessage', result.data.message, 'success');
-                                loadVacationsData(true);
-                            } else {
-                                showAlert('adminAlertMessage', result.message, 'danger');
-                            }
-                        })
-                        .catch(error => {
-                            showAlert('adminAlertMessage', `خطأ في استيراد البيانات: ${error.message}`, 'danger');
-                        })
-                        .finally(() => hideLoading());
-                    } catch (error) {
-                        showAlert('adminAlertMessage', 'خطأ في قراءة الملف: تأكد من أنه ملف JSON صالح.', 'danger');
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'935319c3a8f0bd2a',t:'MTc0NTQ3MTQ5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9353ed75e91b675a',t:'MTc0NTQ4MDE2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9354bf1d2eedbd54',t:'MTc0NTQ4ODc1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'936dc4bb8b8dbfff',t:'MTc0NTc1MTEyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+<!-- نافذة تأكيد الطلب مع رمز التحقق -->
+<div id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeConfirmationModal()">×</span>
+    <h2>تأكيد إضافة الإجازة</h2>
+    <p>هل أنت متأكد من إضافة طلب الإجازة؟</p>
+
+    <div class="form-group">
+      <label for="otpInput">رمز التحقق (OTP):</label>
+      <input type="text" id="otpInput" placeholder="أدخل رمز التحقق هنا" required>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="confirm-btn" onclick="confirmAddVacation()">نعم</button>
+      <button class="cancel-btn" onclick="closeConfirmationModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function showConfirmationModal() {
+  const employeeId = document.getElementById('employeeSelect').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  if (!employeeId || !startDate || !endDate) {
+    showAlert('employeeAlertMessage', 'الرجاء إدخال جميع البيانات المطلوبة.', 'danger');
+    return;
+  }
+
+  const newStart = new Date(startDate);
+  const newEnd = new Date(endDate);
+  if (newEnd < newStart) {
+    showAlert('employeeAlertMessage', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.', 'danger');
+    return;
+  }
+
+  if (hasDateOverlap(employeeId, startDate, endDate)) {
+    showAlert('employeeAlertMessage', 'يوجد تداخل في تاريخ الإجازة مع موظف آخر.', 'danger');
+    return;
+  }
+
+  document.getElementById('vacationId').value = Date.now().toString();
+  document.getElementById('employeeName').value = employees[employeeId];
+  document.getElementById('vacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
+
+  const otpForm = new FormData();
+  otpForm.append("action", "sendOTP");
+  otpForm.append("employeeId", employeeId);
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: otpForm
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.status === "success") {
+      document.getElementById('confirmationModal').style.display = 'flex';
+    } else {
+      showAlert('employeeAlertMessage', result.message, 'danger');
+    }
+  });
+}
+
+function confirmAddVacation() {
+  const otp = document.getElementById("otpInput").value;
+  const form = document.getElementById("vacationForm");
+  const formData = new FormData(form);
+
+  formData.append("action", "addVacation");
+  formData.append("otp", otp);
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === 'success') {
+      showAlert('employeeAlertMessage', result.data.message, 'success');
+      loadVacationsData();
+      resetForm();
+      closeConfirmationModal();
+    } else {
+      showAlert('employeeAlertMessage', result.message, 'danger');
+    }
+  })
+  .catch(error => {
+    showAlert('employeeAlertMessage', `خطأ: ${error.message}`, 'danger');
+  });
+}
+
+function closeConfirmationModal() {
+  document.getElementById('confirmationModal').style.display = 'none';
+}
+</script>
+
 </body>
 </html>
