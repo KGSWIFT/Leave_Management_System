@@ -662,13 +662,6 @@
     <div class="container" id="homePage">
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>KG Swift Leave Management System Structural Engineer</h1>
-         <button onclick="goToHome()">العودة إلى الصفحة الرئيسية</button>
-      <script>
-      function goToHome() {
-        window.location.href = "index.html";
-      }
-    </script>
-
         <div class="home-options">
             <div class="option-card employee-card">
                 <i class="fas fa-user"></i>
@@ -875,7 +868,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnb51wmtLvrg8hwaxfsK5r8FDyezbAJXnpEYrXXx64-HwGibSaXXx-AU9Qv4AFC53-tw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwdSRkpedvzaVHmwxRf-9cvY8cBGIA_XGAa7WMBTJWpxeo2ms0eUzh93UPzTk-tqQE_7A/exec";
         const employees = {
             "11486": "عزاء حميد المعمرية",
             "13914": "فاطمة سالم الحكمانية",
@@ -1570,5 +1563,103 @@
         document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
         document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
     </script>
+
+<!-- نافذة تأكيد الطلب مع رمز التحقق -->
+<div id="confirmationModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeConfirmationModal()">×</span>
+    <h2>تأكيد إضافة الإجازة</h2>
+    <p>هل أنت متأكد من إضافة طلب الإجازة؟</p>
+
+    <div class="form-group">
+      <label for="otpInput">رمز التحقق (OTP):</label>
+      <input type="text" id="otpInput" placeholder="أدخل رمز التحقق هنا" required>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="confirm-btn" onclick="confirmAddVacation()">نعم</button>
+      <button class="cancel-btn" onclick="closeConfirmationModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function showConfirmationModal() {
+  const employeeId = document.getElementById('employeeSelect').value;
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  if (!employeeId || !startDate || !endDate) {
+    showAlert('employeeAlertMessage', 'الرجاء إدخال جميع البيانات المطلوبة.', 'danger');
+    return;
+  }
+
+  const newStart = new Date(startDate);
+  const newEnd = new Date(endDate);
+  if (newEnd < newStart) {
+    showAlert('employeeAlertMessage', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.', 'danger');
+    return;
+  }
+
+  if (hasDateOverlap(employeeId, startDate, endDate)) {
+    showAlert('employeeAlertMessage', 'يوجد تداخل في تاريخ الإجازة مع موظف آخر.', 'danger');
+    return;
+  }
+
+  document.getElementById('vacationId').value = Date.now().toString();
+  document.getElementById('employeeName').value = employees[employeeId];
+  document.getElementById('vacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
+
+  const otpForm = new FormData();
+  otpForm.append("action", "sendOTP");
+  otpForm.append("employeeId", employeeId);
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: otpForm
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.status === "success") {
+      document.getElementById('confirmationModal').style.display = 'flex';
+    } else {
+      showAlert('employeeAlertMessage', result.message, 'danger');
+    }
+  });
+}
+
+function confirmAddVacation() {
+  const otp = document.getElementById("otpInput").value;
+  const form = document.getElementById("vacationForm");
+  const formData = new FormData(form);
+
+  formData.append("action", "addVacation");
+  formData.append("otp", otp);
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.status === 'success') {
+      showAlert('employeeAlertMessage', result.data.message, 'success');
+      loadVacationsData();
+      resetForm();
+      closeConfirmationModal();
+    } else {
+      showAlert('employeeAlertMessage', result.message, 'danger');
+    }
+  })
+  .catch(error => {
+    showAlert('employeeAlertMessage', `خطأ: ${error.message}`, 'danger');
+  });
+}
+
+function closeConfirmationModal() {
+  document.getElementById('confirmationModal').style.display = 'none';
+}
+</script>
+
 </body>
 </html>
