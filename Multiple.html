@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KG SWIFT لإدارة الإجازات قسم تراخيص الإستخدامات المتعددة </title>
+ <title>KG SWIFT لإدارة الإجازات قسم تراخيص الإستخدامات المتعددة </title>
     <link rel="icon" type="image/png" href="KG_SWIFT2.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -378,9 +378,6 @@
             border-radius: 5px;
         }
         .modal-footer .save-btn {
-            background-color: # Gasp! It looks like the code got cut off here! Let me pick up where it left off and make sure we cover everything you need.
-
-```html
             background-color: #27ae60;
         }
         .modal-footer .save-btn:hover {
@@ -662,6 +659,12 @@
     <div class="container" id="homePage">
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
        <h1>KG Swift Leave Management System - Mixed Use Development</h1>
+          <button onclick="goToHome()">العودة إلى الصفحة الرئيسية</button>
+      <script>
+      function goToHome() {
+        window.location.href = "index.html"; // أو رابط صفحة HTML أخرى داخل Apps Script
+      }
+    </script>
         <div class="home-options">
             <div class="option-card employee-card">
                 <i class="fas fa-user"></i>
@@ -704,9 +707,9 @@
         <div id="employeeAlertMessage" class="alert"></div>
         <form id="vacationForm">
             <div class="form-group">
-                <label for="employeeSelect">اسم المهندس:</label>
+                 <label for="employeeSelect">اسم المهندس:</label>
                 <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم المهندس">
-        <option value="" disabled selected>اختر اسم الموظف</option>
+                 <option value="" disabled selected>اختر اسم المهندس</option>
         <option value="12442">هيثم علي المحاربي (12442)</option>
         <option value="13225">طلال محمد الحجري (13225)</option>
         <option value="13257">عائشة راشد الغيثية (13257)</option>
@@ -723,8 +726,7 @@
         <option value="20202">أمير  محمود آل طالب (20202)</option>
         <option value="20205">مارية  عبدالله البوسعيدية (20205)</option>
         <option value="20206">عائشة  سيف الرحبية (20206)</option>
-    </select>
-
+    </select>>
             </div>
             <div class="form-group">
                 <label for="startDate">تاريخ بداية الإجازة:</label>
@@ -764,7 +766,7 @@
     <div class="container" id="adminPage" style="display: none;">
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
-        <h1>نظام إدارة الإجازات - لوحة تحكم المسؤول</h1>
+        <h1>لوحة إدارة الإجازات - لوحة تحكم المسؤول</h1>
         <div id="adminAlertMessage" class="alert"></div>
         <div class="buttons">
             <button id="printAdminButton">طباعة الجدول</button>
@@ -801,10 +803,10 @@
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="id" id="editVacationId">
                 <div class="form-group">
-                    <label for="editEmployeeSelect">اسم المهندس:</label>
-                    <select id="editEmployeeSelect" name="employeeId" required aria-label="اختر اسم المهندس">
-        <option value="" disabled selected>اختر اسم الموظف</option>
-        <option value="12442">هيثم علي المحاربي (12442)</option>
+                     <label for="employeeSelect">اسم المهندس:</label>
+                <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم المهندس">
+                 <option value="" disabled selected>اختر اسم المهندس</option>
+          <option value="12442">هيثم علي المحاربي (12442)</option>
         <option value="13225">طلال محمد الحجري (13225)</option>
         <option value="13257">عائشة راشد الغيثية (13257)</option>
         <option value="14531">محمد خميس السيابي (14531)</option>
@@ -814,14 +816,13 @@
         <option value="16428">فاطمة محمد العدوية (16428)</option>
         <option value="19800">مازن سعيد الذهلي (19800)</option>
         <option value="19804">هبة سليمان الفلاحية (19804)</option>
-        <option value="20146">عماد عبدالله لهادي (20146)</option>
-        <option value="20166">أصيلة علي الحسنية (20166)</option>
-        <option value="20201">مرشد خلفان الذخري (20201)</option>
-        <option value="20202">أمير محمود آل طالب (20202)</option>
-        <option value="20205">مارية عبدالله البوسعيدية (20205)</option>
-        <option value="20206">عائشة سيف الرحبية (20206)</option>
-    </select>
-
+        <option value="20146">عماد  عبدالله لهادي (20146)</option>
+        <option value="20166">أصيلة  علي الحسنية (20166)</option>
+        <option value="20201">مرشد  خلفان الذخري (20201)</option>
+        <option value="20202">أمير  محمود آل طالب (20202)</option>
+        <option value="20205">مارية  عبدالله البوسعيدية (20205)</option>
+        <option value="20206">عائشة  سيف الرحبية (20206)</option>
+         </select>>
                 </div>
                 <div class="form-group">
                     <label for="editStartDate">تاريخ بداية الإجازة:</label>
@@ -849,11 +850,18 @@
         </div>
     </div>
 
+    <!-- نافذة تأكيد الطلب مع رمز التحقق -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeConfirmationModal()">×</span>
-            < </h2>التاكد من هوية المستخدم</h2>
+            </h2>التاكد من هوية المستخدم</h2>
             <p>  تم ارسال رمز التحقق الى بريدك الالكتروني  </p>
+
+            <div class="form-group">
+                <label for="otpInput">رمز التحقق (OTP):</label>
+                <input type="text" id="otpInput" placeholder="أدخل رمز التحقق هنا" required>
+            </div>
+
             <div class="modal-buttons">
                 <button class="confirm-btn" onclick="confirmAddVacation()">نعم</button>
                 <button class="cancel-btn" onclick="closeConfirmationModal()">إلغاء</button>
@@ -1110,80 +1118,61 @@
             }
 
             if (hasDateOverlap(employeeId, startDate, endDate)) {
-                showAlert('employeeAlertMessage', 'موظف آخر لديه نفس تاريخ الإجازة، يرجى مراجعة رئيس القسم.', 'danger');
+                showAlert('employeeAlertMessage', 'يوجد تداخل في تاريخ الإجازة مع موظف آخر.', 'danger');
                 return;
             }
 
             document.getElementById('vacationId').value = Date.now().toString();
             document.getElementById('employeeName').value = employees[employeeId];
             document.getElementById('vacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
-            document.getElementById('confirmationModal').style.display = 'flex';
+
+            const otpForm = new FormData();
+            otpForm.append("action", "sendOTP");
+            otpForm.append("employeeId", employeeId);
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                body: otpForm
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === "success") {
+                    document.getElementById('confirmationModal').style.display = 'flex';
+                } else {
+                    showAlert('employeeAlertMessage', result.message, 'danger');
+                }
+            });
         }
 
         function confirmAddVacation() {
-            const form = document.getElementById('vacationForm');
+            const otp = document.getElementById("otpInput").value;
+            const form = document.getElementById("vacationForm");
             const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-            const employeeId = formData.get('employeeId');
-            const employeeName = formData.get('employeeName');
-            const startDate = formData.get('startDate');
-            const endDate = formData.get('endDate');
-            const days = formData.get('days');
 
-            showLoading();
+            formData.append("action", "addVacation");
+            formData.append("otp", otp);
+
             fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                body: params
+                method: "POST",
+                body: formData
             })
             .then(response => response.json())
             .then(result => {
                 if (result.status === 'success') {
                     showAlert('employeeAlertMessage', result.data.message, 'success');
-                    sendAdminNotification({
-                        employeeId,
-                        employeeName,
-                        startDate: formatDate(startDate),
-                        endDate: formatDate(endDate),
-                        days
-                    });
                     loadVacationsData();
                     resetForm();
+                    closeConfirmationModal();
                 } else {
                     showAlert('employeeAlertMessage', result.message, 'danger');
                 }
             })
             .catch(error => {
-                showAlert('employeeAlertMessage', `خطأ في إضافة الإجازة: ${error.message}`, 'danger');
-            })
-            .finally(() => {
-                closeConfirmationModal();
-                hideLoading();
+                showAlert('employeeAlertMessage', `خطأ: ${error.message}`, 'danger');
             });
         }
 
-        function sendAdminNotification(vacationData) {
-            const params = new URLSearchParams({
-                action: 'sendAdminEmail',
-                employeeId: vacationData.employeeId,
-                employeeName: vacationData.employeeName,
-                startDate: vacationData.startDate,
-                endDate: vacationData.endDate,
-                days: vacationData.days
-            });
-
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                body: params
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status !== 'success') {
-                    console.error('فشل إرسال بريد المسؤول:', data.message);
-                }
-            })
-            .catch(error => {
-                console.error('خطأ في إرسال بريد المسؤول:', error);
-            });
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
         }
 
         function resetForm() {
@@ -1549,110 +1538,8 @@
             .finally(() => hideLoading());
         }
 
-        function closeConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
-
         document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
         document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
     </script>
-
-<!-- نافذة تأكيد الطلب مع رمز التحقق -->
-<div id="confirmationModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeConfirmationModal()">×</span>
-    <h2>تأكيد إضافة الإجازة</h2>
-    <p>هل أنت متأكد من إضافة طلب الإجازة؟</p>
-
-    <div class="form-group">
-      <label for="otpInput">رمز التحقق (OTP):</label>
-      <input type="text" id="otpInput" placeholder="أدخل رمز التحقق هنا" required>
-    </div>
-
-    <div class="modal-buttons">
-      <button class="confirm-btn" onclick="confirmAddVacation()">نعم</button>
-      <button class="cancel-btn" onclick="closeConfirmationModal()">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-
-<script>
-function showConfirmationModal() {
-  const employeeId = document.getElementById('employeeSelect').value;
-  const startDate = document.getElementById('startDate').value;
-  const endDate = document.getElementById('endDate').value;
-
-  if (!employeeId || !startDate || !endDate) {
-    showAlert('employeeAlertMessage', 'الرجاء إدخال جميع البيانات المطلوبة.', 'danger');
-    return;
-  }
-
-  const newStart = new Date(startDate);
-  const newEnd = new Date(endDate);
-  if (newEnd < newStart) {
-    showAlert('employeeAlertMessage', 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.', 'danger');
-    return;
-  }
-
-  if (hasDateOverlap(employeeId, startDate, endDate)) {
-    showAlert('employeeAlertMessage', 'يوجد تداخل في تاريخ الإجازة مع موظف آخر.', 'danger');
-    return;
-  }
-
-  document.getElementById('vacationId').value = Date.now().toString();
-  document.getElementById('employeeName').value = employees[employeeId];
-  document.getElementById('vacationDays').value = Math.ceil((newEnd - newStart) / (1000 * 60 * 60 * 24)) + 1;
-
-  const otpForm = new FormData();
-  otpForm.append("action", "sendOTP");
-  otpForm.append("employeeId", employeeId);
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    body: otpForm
-  })
-  .then(res => res.json())
-  .then(result => {
-    if (result.status === "success") {
-      document.getElementById('confirmationModal').style.display = 'flex';
-    } else {
-      showAlert('employeeAlertMessage', result.message, 'danger');
-    }
-  });
-}
-
-function confirmAddVacation() {
-  const otp = document.getElementById("otpInput").value;
-  const form = document.getElementById("vacationForm");
-  const formData = new FormData(form);
-
-  formData.append("action", "addVacation");
-  formData.append("otp", otp);
-
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    body: formData
-  })
-  .then(response => response.json())
-  .then(result => {
-    if (result.status === 'success') {
-      showAlert('employeeAlertMessage', result.data.message, 'success');
-      loadVacationsData();
-      resetForm();
-      closeConfirmationModal();
-    } else {
-      showAlert('employeeAlertMessage', result.message, 'danger');
-    }
-  })
-  .catch(error => {
-    showAlert('employeeAlertMessage', `خطأ: ${error.message}`, 'danger');
-  });
-}
-
-function closeConfirmationModal() {
-  document.getElementById('confirmationModal').style.display = 'none';
-}
-</script>
-
 </body>
 </html>
