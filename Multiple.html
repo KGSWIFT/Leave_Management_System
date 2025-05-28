@@ -767,13 +767,20 @@
         <button class="back-btn" onclick="showHomePage()"><i class="fas fa-arrow-right"></i> العودة</button>
         <img src="KG_SWIFT.png" alt="الشعار" class="logo">
         <h1>لوحة إدارة الإجازات - لوحة تحكم المسؤول</h1>
-        <div id="adminAlertMessage" class="alert"></div>
-   <div class="form-group" style="margin-bottom: 10px; max-width: 300px;">
-  <label for="maxEmployees" style="font-size: 14px; font-weight: normal;">الحد الأقصى لعدد الموظفين في إجازة:</label>
-  <input type="number" id="maxEmployees" min="1" value="3" style="width: 120px; margin-top: 5px;">
-  <button onclick="updateMaxEmployees()" style="width: 120px; margin-top: 10px; padding: 6px 10px; font-size: 12px;">تحديث الحد الأقصى</button>
-</div>
+        <div class="form-group" style="margin-bottom: 10px; max-width: 300px;">
+  <label for="maxEmployees" style="font-size: 14px; font-weight: normal;">الحد الأقصى الحالي للإجازات المتزامنة:</label>
+  <p id="currentMax" style="font-weight: bold; color: #2c3e50;">جاري التحميل...</p>
 
+  <label for="maxEmployees" style="font-size: 14px; font-weight: normal;">تحديد حد أقصى جديد:</label>
+  <select id="maxEmployees" style="width: 120px; margin-top: 5px;">
+    <option value="1">1 مهندس</option>
+    <option value="2">2 مهندسين</option>
+    <option value="3">3 مهندسين</option>
+    <option value="4">4 مهندسين</option>
+    <option value="5">5 مهندسين</option>
+  </select>
+  <button onclick="updateMaxEmployees()" style="width: 150px; margin-top: 10px; padding: 6px 10px; font-size: 12px;">تحديث الحد الأقصى</button>
+</div>
 <div class="buttons">
   <button id="printAdminButton">طباعة الجدول</button>
   <button id="saveAdminButton">تصدير البيانات</button>
@@ -879,7 +886,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6NrLnck7ux_BiYg-ojji8EV7c-siQBuYl4a8WS2dTQlL5jsT_TM-giwUvPGMlWS71/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyc5Az40jwnvfYLXeKlwOREvMJDzgzeX9_Kl7xzDS4CFpl_eNipSVCsXMuSObeiOg0Y/exec";
         const employees = {
     "12442": "هيثم علي المحاربي",
     "13225": "طلال محمد الحجري",
@@ -1069,6 +1076,7 @@
             document.getElementById('employeePage').style.display = 'none';
             document.getElementById('adminLoginPage').style.display = 'none';
             document.getElementById('adminPage').style.display = 'block';
+            fetchCurrentMaxEmployees();
             loadVacationsData(true);
         }
 
@@ -1547,6 +1555,56 @@
 
         document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
         document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
-    </script>
+// ✅ عرض الحد الأقصى الحالي عند فتح صفحة المسؤول
+
+    function fetchCurrentMaxEmployees() {
+      const callbackName = "displayMaxEmployees";
+      const url = GOOGLE_SCRIPT_URL + "?callback=" + callbackName;
+
+      window[callbackName] = function(response) {
+        if (response.status === "success") {
+          const max = response.maxEmployees;
+          const current = response.currentOnLeave;
+          document.getElementById("currentMax").innerText = "الحد الأقصى الحالي: " + max + " مهندس/ـة";
+          document.getElementById("leaveStatusToday").innerText = "المجازون اليوم: " + current + " من " + max;
+        } else {
+          document.getElementById("currentMax").innerText = "تعذر جلب الحد الأقصى الحالي.";
+          document.getElementById("leaveStatusToday").innerText = "";
+        }
+      };
+
+      const script = document.createElement('script');
+      script.src = url;
+      document.body.appendChild(script);
+    }
+
+    function updateMaxEmployees() {
+      const maxEmployees = document.getElementById("maxEmployees").value;
+
+      const formData = new FormData();
+      formData.append("action", "updateMaxLeaveLimit");
+      formData.append("limit", maxEmployees);
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === "success") {
+          alert("✅ " + result.data.message);
+          fetchCurrentMaxEmployees();
+        } else {
+          alert("❌ " + result.message);
+        }
+      })
+      .catch(err => {
+        alert("حدث خطأ أثناء الاتصال بالخادم");
+      });
+    }
+
+    window.onload = fetchCurrentMaxEmployees;
+  </script>
+
 </body>
 </html>
