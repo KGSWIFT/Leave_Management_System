@@ -679,7 +679,7 @@
         </div>
         <footer class="no-print">
             <p class="footer-text">جــــميـع الــــحقــــوق مـــــــحفوظـــــة 2025 KG™</p>
-            <p class="footer-text">Created by KG</p>
+            <p class="footer-text">Created by Khalid AlGhazali</p>
         </footer>
     </div>
 
@@ -709,7 +709,7 @@
             <div class="form-group">
                  <label for="employeeSelect">اسم المهندس:</label>
                 <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم المهندس">
-                 <option value="" disabled selected>اختر اسم المهندس</option>
+         <option value="" disabled selected>اختر اسم المهندس</option>
         <option value="12442">هيثم علي المحاربي (12442)</option>
         <option value="13225">طلال محمد الحجري (13225)</option>
         <option value="13257">عائشة راشد الغيثية (13257)</option>
@@ -819,8 +819,8 @@
                 <div class="form-group">
                      <label for="employeeSelect">اسم المهندس:</label>
                 <select id="employeeSelect" name="employeeId" required aria-label="اختر اسم المهندس">
-                 <option value="" disabled selected>اختر اسم المهندس</option>
-          <option value="12442">هيثم علي المحاربي (12442)</option>
+         <option value="" disabled selected>اختر اسم المهندس</option>
+         <option value="12442">هيثم علي المحاربي (12442)</option>
         <option value="13225">طلال محمد الحجري (13225)</option>
         <option value="13257">عائشة راشد الغيثية (13257)</option>
         <option value="14531">محمد خميس السيابي (14531)</option>
@@ -886,7 +886,7 @@
     <div class="taskbar" id="taskbar"></div>
 
     <script>
-          const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHsa_1LuDh1NCYDWTx2Fa7L6iHIBXfcoYhJ16L11OPOtuXCIF4h00i0DTXpV6LhE-T/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfQjxOIjto-4hOV7EnrF6akRAZKvUznfh-ds--0wUijpRYHDvTPIHKMmZSgH0A3Vf1/exec";
         const employees = {
     "12442": "هيثم علي المحاربي",
     "13225": "طلال محمد الحجري",
@@ -1560,7 +1560,7 @@
     function fetchCurrentMaxEmployees() {
       const callbackName = "displayMaxEmployees";
       const url = GOOGLE_SCRIPT_URL + "?callback=" + callbackName;
-
+      
       window[callbackName] = function(response) {
         if (response.status === "success") {
           const max = response.maxEmployees;
@@ -1605,6 +1605,5 @@
 
     window.onload = fetchCurrentMaxEmployees;
   </script>
-
 </body>
 </html>
