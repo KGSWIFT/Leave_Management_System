@@ -1604,6 +1604,16 @@
     }
 
     window.onload = fetchCurrentMaxEmployees;
+        // زر طباعة صفحة الموظف
+document.getElementById("printButton").addEventListener("click", () => {
+    window.print();
+});
+
+// زر طباعة صفحة المسؤول
+document.getElementById("printAdminButton").addEventListener("click", () => {
+    window.print();
+});
+
   </script>
 </body>
 </html>
