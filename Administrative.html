@@ -1531,6 +1531,16 @@
 
         document.querySelector('.employee-card').addEventListener('click', showEmployeePage);
         document.querySelector('.admin-card').addEventListener('click', showAdminLogin);
+                // زر طباعة صفحة الموظف
+document.getElementById("printButton").addEventListener("click", () => {
+    window.print();
+});
+
+// زر طباعة صفحة المسؤول
+document.getElementById("printAdminButton").addEventListener("click", () => {
+    window.print();
+});
+
     </script>
 </body>
 </html>
